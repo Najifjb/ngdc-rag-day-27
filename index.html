@@ -482,12 +482,11 @@
         });
     }
 
-    // ওয়েবসাইট সেটিংস লোড (লোকালস্টোরেজ থেকে নিরাপদ সিঙ্ক)
+    // ওয়েবসাইট সেটিংস লোড এবং রিয়েল-টাইম গ্লোবাল ক্লাউড সিঙ্ক
     function loadWebsiteSettings() {
-        let localConfig = localStorage.getItem("ngdc_config");
-        if (localConfig) {
-            try {
-                let data = JSON.parse(localConfig);
+        db.collection("students").doc("_site_config_settings").onSnapshot((doc) => {
+            if (doc.exists) {
+                let data = doc.data();
                 if (data.frontImg) {
                     let fImg = document.getElementById("previewFrontImg");
                     if(fImg) fImg.src = data.frontImg;
@@ -496,25 +495,39 @@
                     let bImg = document.getElementById("previewBackImg");
                     if(bImg) bImg.src = data.backImg;
                 }
-                if(document.getElementById('adminCountOffset')) {
-                    document.getElementById('adminCountOffset').value = data.countOffset || 0;
+                let offsetField = document.getElementById('adminCountOffset');
+                if(offsetField && document.activeElement !== offsetField) {
+                    offsetField.value = data.countOffset !== undefined ? data.countOffset : 0;
                 }
-                window.adminCountOffsetVal = data.countOffset || 0;
-            } catch(e) {}
-        }
+                window.adminCountOffsetVal = data.countOffset !== undefined ? parseInt(data.countOffset) : 0;
+            }
+        }, (error) => {
+            // যদি ক্লাউড থেকে সরাসরি না পায়, লোকাল ব্যাকআপ থেকে দেখাবে
+            let localConfig = localStorage.getItem("ngdc_config");
+            if (localConfig) {
+                try {
+                    let data = JSON.parse(localConfig);
+                    if (data.frontImg) { let fImg = document.getElementById("previewFrontImg"); if(fImg) fImg.src = data.frontImg; }
+                    if (data.backImg) { let bImg = document.getElementById("previewBackImg"); if(bImg) bImg.src = data.backImg; }
+                    let offsetField = document.getElementById('adminCountOffset');
+                    if(offsetField) offsetField.value = data.countOffset || 0;
+                    window.adminCountOffsetVal = data.countOffset || 0;
+                } catch(e) {}
+            }
+        });
     }
     loadWebsiteSettings();
 
-    // অ্যাডমিন সেটিংস সেভ ফাংশন (লোকালস্টোরেজ ও ফায়ারবেস ট্রাই)
+    // অ্যাডমিন সেটিংস সেভ ফাংশন (সরাসরি ফায়ারবেস ক্লাউডে সেভ হবে যা সব ডিভাইসে সিঙ্ক করবে)
     function saveAdminSettings() {
         let fFile = document.getElementById('adminFrontPic').files[0];
         let bFile = document.getElementById('adminBackPic').files[0];
         let offsetInput = document.getElementById('adminCountOffset').value;
         let offsetVal = offsetInput !== "" ? parseInt(offsetInput) : 0;
 
-        showToast("সেটিংস সেভ হচ্ছে...", "#38bdf8");
+        showToast("ক্লাউডে সেটিংস সেভ হচ্ছে...", "#38bdf8");
 
-        let updateData = { countOffset: offsetVal };
+        let updateData = { countOffset: offsetVal, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
         let promises = [];
 
         if (fFile) {
@@ -540,41 +553,51 @@
         }
 
         Promise.all(promises).then(() => {
-            let existingLocal = JSON.parse(localStorage.getItem("ngdc_config") || "{}");
-            let mergedLocal = Object.assign({}, existingLocal, updateData);
-            localStorage.setItem("ngdc_config", JSON.stringify(mergedLocal));
-            window.adminCountOffsetVal = offsetVal;
+            // ফায়ারবেসে সেভ করা হচ্ছে যাতে সব ডিভাইসে লাইভ সিঙ্ক হয়
+            db.collection("students").doc("_site_config_settings").set(updateData, { merge: true })
+            .then(() => {
+                localStorage.setItem("ngdc_config", JSON.stringify(updateData));
+                window.adminCountOffsetVal = offsetVal;
+                
+                if (updateData.frontImg) {
+                    let fImg = document.getElementById("previewFrontImg");
+                    if(fImg) fImg.src = updateData.frontImg;
+                }
+                if (updateData.backImg) {
+                    let bImg = document.getElementById("previewBackImg");
+                    if(bImg) bImg.src = updateData.backImg;
+                }
 
-            if (updateData.frontImg) {
-                let fImg = document.getElementById("previewFrontImg");
-                if(fImg) fImg.src = updateData.frontImg;
-            }
-            if (updateData.backImg) {
-                let bImg = document.getElementById("previewBackImg");
-                if(bImg) bImg.src = updateData.backImg;
-            }
-
-            db.collection("settings").doc("config").set(updateData, { merge: true }).catch((err) => {});
-            showToast("সেটিংস সফলভাবে সেভ ও আপডেট হয়েছে!", "#10b981");
+                showToast("সেটিংস সফলভাবে ক্লাউডে সেভ হয়েছে ও সব ডিভাইসে সিঙ্ক হয়ে গেছে!", "#10b981");
+            })
+            .catch((err) => {
+                showToast("ক্লাউডে সেভ করতে সমস্যা: " + err.message, "#ef4444");
+            });
         });
     }
 
-    // লাইভ কাউন্টার
+    // লাইভ কাউন্টার (ডেটাবেসের মোট শিক্ষার্থী + অ্যাডমিন কাউন্ট অফসেট)
     db.collection("students").onSnapshot((snapshot) => {
-        let offset = window.adminCountOffsetVal || 0;
-        let localConfig = localStorage.getItem("ngdc_config");
-        if (localConfig) {
-            try {
-                let parsed = JSON.parse(localConfig);
-                if(parsed.countOffset !== undefined) offset = parseInt(parsed.countOffset);
-            } catch(e){}
-        }
-        let total = snapshot.size + offset;
-        let counterEl = document.getElementById("totalRegistered");
-        if(counterEl) { counterEl.innerText = total; }
-    }, (err) => {
-        let counterEl = document.getElementById("totalRegistered");
-        if(counterEl) { counterEl.innerText = snapshot.size; }
+        let studentCount = 0;
+        snapshot.forEach((doc) => {
+            if(doc.id !== "_site_config_settings") {
+                studentCount++;
+            }
+        });
+
+        db.collection("students").doc("_site_config_settings").get().then((doc) => {
+            let offset = 0;
+            if (doc.exists && doc.data().countOffset !== undefined) {
+                offset = parseInt(doc.data().countOffset);
+            }
+            let total = studentCount + offset;
+            let counterEl = document.getElementById("totalRegistered");
+            if(counterEl) { counterEl.innerText = total; }
+        }).catch(() => {
+            let total = studentCount;
+            let counterEl = document.getElementById("totalRegistered");
+            if(counterEl) { counterEl.innerText = total; }
+        });
     });
 
     const countDownDate = new Date("Jan 15, 2027 10:00:00").getTime();
@@ -695,12 +718,13 @@
         html2pdf().set(opt).from(element).save();
     }
 
-    // অ্যাডমিন ডাটা লোড (সিরিয়াল নম্বর ও মোবাইল নম্বর সহ)
+    // অ্যাডমিন ডাটা লোড (কনফিগ ডক বাদ দিয়ে শুধু স্টুডেন্টদের তালিকা ও সিরিয়াল নম্বর)
     function loadAdminData() {
         db.collection("students").orderBy("timestamp", "desc").onSnapshot((querySnapshot) => {
             let trHtml = '';
             let serial = 1;
             querySnapshot.forEach((doc) => {
+                if(doc.id === "_site_config_settings") return;
                 let data = doc.data();
                 let statusColor = data.status === 'Done' ? '#10b981' : '#f59e0b';
                 let imgTag = data.pic ? `<img src="${data.pic}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%; border: 2px solid var(--glow-blue);">` : 'N/A';
