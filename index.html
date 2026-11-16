@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGDC Rag Day 27</title>
+    
+    <!-- 아이폰 고유 폰트: Hind Siliguri -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    
+    <!-- PDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        /* ================= গ্লোবাল ডিজাইন ও কালার গ্রেডিং ================= */
+        :root {
+            --glow-pink: #ec4899;
+            --glow-purple: #8b5cf6;
+            --glow-blue: #38bdf8;
+            --glass-bg: rgba(25, 25, 35, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        body {
+            font-family: 'Hind Siliguri', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #0b0f19;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(236, 72, 153, 0.15) 0px, transparent 50%),
+                radial-gradient(at 50% 100%, rgba(56, 189, 248, 0.15) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        /* ================= হেডার ও গ্লাস ন্যাভিগেশন ================= */
+        .header {
+            background: rgba(11, 15, 25, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky; top: 0; z-index: 100;
+            display: flex; flex-direction: column; align-items: center; padding: 15px 20px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+        .logo { width: 120px; height: auto; margin-bottom: 15px; border-radius: 10px; box-shadow: 0 0 15px rgba(255,255,255,0.05); }
+        
+        .nav-menu { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+        .nav-menu button {
+            background: rgba(255, 255, 255, 0.05); color: var(--text-dim);
+            border: 1px solid var(--glass-border); padding: 10px 20px; font-size: 16px; font-weight: 600;
+            font-family: inherit; cursor: pointer; border-radius: 30px; transition: all 0.4s ease;
+        }
+        .nav-menu button:hover { background: rgba(255,255,255,0.1); color: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.1); }
+        .nav-menu button.active-btn { 
+            background: linear-gradient(90deg, var(--glow-pink), var(--glow-purple));
+            color: white; border: none; box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
+        }
+
+        /* ================= সেকশন ও গ্লাস-মরফিজম কার্ড ================= */
+        .container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        .section { display: none; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+        .active-section { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card { 
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); padding: 30px; border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); margin-bottom: 30px; transition: 0.3s;
+        }
+        .card:hover { border-color: rgba(255,255,255,0.2); box-shadow: 0 8px 32px rgba(139, 92, 246, 0.15); }
+        
+        .card h3 { margin-top: 0; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px; font-size: 22px; color: #fff; }
+        .card h3 i { color: var(--glow-blue); margin-right: 8px; text-shadow: 0 0 10px rgba(56,189,248,0.5); }
+
+        /* ================= হিউম্যান টোন টেক্সট ও নিয়ন কাউন্টডাউন ================= */
+        .hero-text { text-align: center; margin-bottom: 40px; }
+        .hero-text h1 { 
+            font-size: 32px; margin-bottom: 15px; 
+            background: linear-gradient(90deg, #fff, #a5b4fc);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(165,180,252,0.3);
+        }
+        .hero-text p { font-size: 18px; color: var(--text-dim); line-height: 1.7; }
+        
+        .countdown { display: flex; justify-content: center; gap: 15px; margin-top: 25px; flex-wrap: wrap; }
+        .time-box { 
+            background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); padding: 15px 20px; 
+            border-radius: 15px; text-align: center; min-width: 75px;
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.02);
+        }
+        .time-box span { 
+            font-size: 28px; font-weight: 700; color: var(--glow-blue); display: block; 
+            text-shadow: 0 0 15px rgba(56,189,248,0.6);
+        }
+        .time-box small { font-size: 14px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* ================= ইনপুট ও গ্লোয়িং বাটন ================= */
+        input, select {
+            width: 100%; padding: 15px; margin: 12px 0; border: 1px solid var(--glass-border);
+            border-radius: 12px; font-size: 16px; font-family: inherit; box-sizing: border-box;
+            background: rgba(0,0,0,0.3); color: #fff; transition: 0.3s;
+        }
+        input:focus, select:focus { 
+            border-color: var(--glow-purple); outline: none; background: rgba(0,0,0,0.5);
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+        }
+        input::placeholder { color: #64748b; }
+        select option { background: #1e293b; color: #fff; }
+
+        .submit-btn {
+            background: linear-gradient(90deg, var(--glow-pink), var(--glow-purple));
+            color: white; border: none; padding: 16px; width: 100%; border-radius: 12px;
+            font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.4s;
+            font-family: inherit; margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+        }
+        .submit-btn:hover { 
+            background: linear-gradient(90deg, #f472b6, #a78bfa);
+            box-shadow: 0 0 25px rgba(236, 72, 153, 0.7); transform: translateY(-2px); 
+        }
+        .submit-btn:disabled { background: #475569; box-shadow: none; cursor: not-allowed; transform: none; }
+
+        /* ================= টাইমলাইন ও FAQ ================= */
+        .timeline { list-style: none; padding: 0; margin: 0; }
+        .timeline li { padding: 12px 0; border-left: 2px solid var(--glow-purple); margin-left: 10px; padding-left: 25px; position: relative; }
+        .timeline li::before { 
+            content: ''; position: absolute; width: 12px; height: 12px; 
+            background: var(--glow-pink); border-radius: 50%; left: -7px; top: 18px; 
+            box-shadow: 0 0 10px var(--glow-pink);
+        }
+        .timeline b { color: #fff; font-size: 18px; display: inline-block; margin-bottom: 4px; }
+        .timeline p { margin: 0; color: var(--text-dim); }
+
+        details { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; margin-bottom: 12px; border: 1px solid var(--glass-border); }
+        summary { font-weight: 600; cursor: pointer; outline: none; color: #fff; }
+        details p { margin-top: 10px; color: var(--text-dim); line-height: 1.6; }
+
+        /* ================= অ্যাডমিন টেবিল ================= */
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 15px; }
+        th, td { border: 1px solid var(--glass-border); padding: 14px; text-align: center; color: var(--text-main); }
+        th { background: rgba(255,255,255,0.05); font-weight: 600; color: var(--glow-blue); }
+        tr:hover { background: rgba(255,255,255,0.02); }
+        
+        .approve-btn { background: var(--glow-blue); color: #000; border: none; padding: 8px 15px; cursor: pointer; border-radius: 6px; font-weight: bold; }
+        .export-btn { background: #10b981; margin-bottom: 15px; width: auto; padding: 10px 20px; box-shadow: 0 0 15px rgba(16,185,129,0.3); }
+
+        /* ================= হোয়াটসঅ্যাপ ও টোস্ট ================= */
+        .whatsapp-float {
+            position: fixed; bottom: 30px; right: 30px; background-color: #25d366; color: #FFF;
+            border-radius: 50%; text-align: center; font-size: 32px; box-shadow: 0 0 20px rgba(37,211,102,0.5);
+            z-index: 100; width: 65px; height: 65px; display: flex; align-items: center; justify-content: center; text-decoration: none;
+            transition: 0.3s;
+        }
+        .whatsapp-float:hover { transform: scale(1.1); box-shadow: 0 0 30px rgba(37,211,102,0.8); }
+
+        #toast {
+            visibility: hidden; min-width: 250px; background: rgba(15, 23, 42, 0.9); color: #fff;
+            backdrop-filter: blur(10px); border: 1px solid var(--glass-border);
+            text-align: center; border-radius: 10px; padding: 16px 20px; position: fixed;
+            z-index: 1000; bottom: 40px; left: 50%; transform: translateX(-50%); font-size: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 3.5s; }
+        @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 40px; opacity: 1; } }
+        @keyframes fadeout { from { bottom: 40px; opacity: 1; } to { bottom: 0; opacity: 0; } }
+
+        /* রিসিট ডিজাইন (প্রিন্টের জন্য হালকা ব্যাকগ্রাউন্ড) */
+        #receipt { display: none; padding: 30px; border: 2px solid var(--glow-blue); background: #ffffff; border-radius: 15px; margin-top: 25px; color: #000; box-shadow: 0 0 20px rgba(255,255,255,0.1); }
+    </style>
+</head>
+<body>
+
+    <!-- ================= গ্লাস হেডার ================= -->
+    <header class="header">
+        <img src="https://i.postimg.cc/rmKVFzqY/Black-and-White-Modern-SEO-Services-Website-Logo.png" alt="NGDC Rag Day 27" class="logo">
+        <div class="nav-menu">
+            <button id="btn-reg" class="active-btn" onclick="showSection('regSection', 'btn-reg')"><i class="fas fa-ticket-alt"></i> রেজিস্ট্রেশন</button>
+            <button id="btn-status" onclick="showSection('statusSection', 'btn-status')"><i class="fas fa-search"></i> স্ট্যাটাস ও রিসিট</button>
+            <button id="btn-admin" onclick="showAdminLogin()"><i class="fas fa-lock"></i> অ্যাডমিন</button>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <!-- ================= ১. রেজিস্ট্রেশন সেকশন ================= -->
+        <div id="regSection" class="section active-section">
+            
+            <div class="hero-text">
+                <h1>NGDC Rag Day 27 🎓</h1>
+                <p>বন্ধু, কলেজ জীবনের এই শেষ দিনগুলো কি আর ফিরে আসবে? ক্লাসের আড্ডা, করিডোরের দৌড়াদৌড়ি আর ক্যানটিনের সেই স্মৃতিগুলো একসাথে আরেকবার উদযাপন করার জন্যই আমাদের এই আয়োজন। দেরি না করে আজই নিজের সিট কনফার্ম করে ফেলো!</p>
+                
+                <div class="countdown">
+                    <div class="time-box"><span id="days">00</span><small>দিন</small></div>
+                    <div class="time-box"><span id="hours">00</span><small>ঘণ্টা</small></div>
+                    <div class="time-box"><span id="minutes">00</span><small>মিনিট</small></div>
+                    <div class="time-box"><span id="seconds">00</span><small>সেকেন্ড</small></div>
+                </div>
+            </div>
+
+            <!-- ইভেন্ট শিডিউল -->
+            <div class="card">
+                <h3><i class="far fa-clock"></i> ইভেন্ট শিডিউল</h3>
+                <ul class="timeline">
+                    <li><b>সকাল ১০:০০</b> <p>গেট ওপেন ও স্পেশাল টি-শার্ট বিতরণ</p></li>
+                    <li><b>সকাল ১১:৩০</b> <p>ফ্ল্যাশমব ও কালচারাল প্রোগ্রাম</p></li>
+                    <li><b>দুপুর ০১:৩০</b> <p>গ্র্যান্ড লাঞ্চ ও ফটোসেশন</p></li>
+                    <li><b>বিকাল ০৩:০০</b> <p>লাইভ কনসার্ট ও ডিজে পার্টি</p></li>
+                </ul>
+            </div>
+
+            <!-- রেজিস্ট্রেশন ফর্ম -->
+            <div class="card">
+                <h3><i class="fas fa-pen-nib"></i> রেজিস্ট্রেশন ফর্ম</h3>
+                <p style="text-align: center; color: var(--glow-pink); font-weight: bold; font-size: 18px; margin-bottom: 25px; text-shadow: 0 0 10px rgba(236,72,153,0.3);">
+                    বিকাশ সেন্ড মানি: 01XXXXXXXXX (Personal)<br>ফি: ০০০ টাকা
+                </p>
+                
+                <form id="regForm">
+                    <input type="text" id="name" placeholder="আপনার পুরো নাম" required>
+                    <input type="text" id="roll" placeholder="কলেজ রোল নম্বর" required>
+                    <input type="text" id="section" placeholder="বিভাগ/সেকশন (যেমন: Commerce)" required>
+                    <input type="tel" id="phone" placeholder="সচল ফোন নম্বর" required>
+                    
+                    <select id="tshirt" required>
+                        <option value="">টি-শার্ট সাইজ নির্বাচন করুন</option>
+                        <option value="M">Medium (M)</option>
+                        <option value="L">Large (L)</option>
+                        <option value="XL">Extra Large (XL)</option>
+                        <option value="XXL">Double XL (XXL)</option>
+                    </select>
+                    
+                    <input type="text" id="trxid" placeholder="বিকাশ TrxID (টাকা পাঠানোর পর)" required>
+                    
+                    <button type="submit" class="submit-btn"><i class="fas fa-paper-plane"></i> সাবমিট করুন</button>
+                </form>
+            </div>
+
+            <!-- FAQ -->
+            <div class="card">
+                <h3><i class="fas fa-question-circle"></i> সাধারণ জিজ্ঞাসা (FAQ)</h3>
+                <details>
+                    <summary>ভুল নম্বরে টাকা পাঠালে কী করব?</summary>
+                    <p>দয়া করে সাবধানে আমাদের নির্ধারিত নম্বরেই সেন্ড মানি করবেন। ভুল হলে আমরা দায়ী থাকব না, তবে দ্রুত হোয়াটসঅ্যাপে যোগাযোগ করলে আমরা চেক করে দেখব।</p>
+                </details>
+                <details>
+                    <summary>পেমেন্ট কতক্ষণের মধ্যে অ্যাপ্রুভ হবে?</summary>
+                    <p>ফর্ম পূরণের সাধারণত ২ থেকে ১২ ঘণ্টার মধ্যে অ্যাডমিন প্যানেল থেকে ম্যানুয়ালি চেক করে পেমেন্ট অ্যাপ্রুভ করা হয়।</p>
+                </details>
+            </div>
+        </div>
+
+        <!-- ================= ২. স্ট্যাটাস ও রিসিট সেকশন ================= -->
+        <div id="statusSection" class="section">
+            <div class="card" style="text-align: center;">
+                <h2>আপনার স্ট্যাটাস চেক করুন</h2>
+                <p style="color: var(--text-dim); margin-bottom: 25px;">যে ফোন নম্বরটি ফর্মে দিয়েছেন সেটি লিখে চেক করুন</p>
+                
+                <input type="tel" id="checkPhone" placeholder="আপনার ফোন নম্বর দিন" style="text-align: center; font-size: 20px;">
+                <button class="submit-btn" style="background: linear-gradient(90deg, #38bdf8, #3b82f6);" onclick="checkStatus()">
+                    <i class="fas fa-search"></i> চেক করুন
+                </button>
+
+                <div id="receipt">
+                    <h2 style="margin-top: 0; text-align: center; border-bottom: 2px dashed #ccc; padding-bottom: 10px;">NGDC Rag Day 27 - Entry Pass</h2>
+                    <p style="text-align: left; font-size: 18px;"><b>নাম:</b> <span id="r_name"></span></p>
+                    <p style="text-align: left; font-size: 18px;"><b>রোল:</b> <span id="r_roll"></span> | <b>সেকশন:</b> <span id="r_section"></span></p>
+                    <p style="text-align: left; font-size: 18px;"><b>টি-শার্ট:</b> <span id="r_tshirt"></span></p>
+                    <div style="background: #e8f5e9; color: #2e7d32; padding: 15px; border-radius: 8px; margin-top: 25px; font-weight: bold; font-size: 22px; border: 1px solid #c8e6c9;">
+                        ✓ পেমেন্ট কনফার্মড (PAID)
+                    </div>
+                </div>
+                <button id="downloadBtn" class="submit-btn" style="background: #10b981; display: none; margin-top: 20px;" onclick="downloadPDF()">
+                    <i class="fas fa-download"></i> পিডিএফ রিসিট ডাউনলোড
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= ৩. অ্যাডমিন প্যানেল ================= -->
+        <div id="adminLoginSection" class="section">
+            <div class="card" style="max-width: 400px; margin: auto; text-align: center;">
+                <h2><i class="fas fa-user-shield"></i> অ্যাডমিন লগিন</h2>
+                <!-- এখানে ফায়ারবেসে দেওয়া ইমেইল আইডি দিতে হবে (যেমন: najifbj@admin.com) -->
+                <input type="text" id="adminId" placeholder="Admin Login ID (Email)">
+                <input type="password" id="adminPass" placeholder="Password">
+                <button class="submit-btn" onclick="verifyAdmin()">লগিন করুন</button>
+            </div>
+        </div>
+
+        <div id="adminDashboard" class="section">
+            <div class="card table-responsive">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
+                    <h2 style="margin: 0;">অ্যাডমিন কন্ট্রোল প্যানেল</h2>
+                    <button class="submit-btn export-btn" onclick="exportTableToCSV('RagDay_Data.csv')"><i class="fas fa-file-excel"></i> Export to CSV</button>
+                </div>
+                
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>নাম</th><th>রোল</th><th>সেকশন</th><th>টি-শার্ট</th><th>TrxID</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentList"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- হোয়াটসঅ্যাপ বাটন (আপনার নম্বর বসিয়ে নিবেন) -->
+    <a href="https://wa.me/+8801XXXXXXXXX" target="_blank" class="whatsapp-float">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- টোস্ট নোটিফিকেশন -->
+    <div id="toast">মেসেজ</div>
+
+<script>
+    // ================= ফায়ারবেস কনফিগারেশন (আপনার আসল কোড) =================
+    const firebaseConfig = {
+        apiKey: "AIzaSyDZnVFgP7MFpepqnbdk4AF5rlPg85AYDIA",
+        authDomain: "ngdc-rag-day.firebaseapp.com",
+        projectId: "ngdc-rag-day",
+        storageBucket: "ngdc-rag-day.firebasestorage.app",
+        messagingSenderId: "585303373366",
+        appId: "1:585303373366:web:52071c4baa951c1effca97",
+        measurementId: "G-08Y900RS43"
+    };
+    
+    // ফায়ারবেস ইনিশিয়ালাইজেশন
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth(); // অথেনটিকেশন চালু করা হলো
+
+    // ================= টোস্ট ও নেভিগেশন =================
+    function showToast(message, color = "#333") {
+        let toast = document.getElementById("toast");
+        toast.innerText = message;
+        toast.style.backgroundColor = color;
+        toast.style.border = `1px solid ${color}`;
+        toast.className = "show";
+        setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 4000);
+    }
+
+    function showSection(sectionId, btnId) {
+        document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active-section'));
+        document.querySelectorAll('.nav-menu button').forEach(btn => btn.classList.remove('active-btn'));
+        document.getElementById(sectionId).classList.add('active-section');
+        if(btnId) document.getElementById(btnId).classList.add('active-btn');
+    }
+
+    function showAdminLogin() {
+        // যদি আগেই লগিন করা থাকে, তবে সরাসরি ড্যাশবোর্ড দেখাবে
+        if (auth.currentUser) {
+            showSection('adminDashboard', 'btn-admin');
+            loadAdminData();
+        } else {
+            showSection('adminLoginSection', 'btn-admin');
+        }
+    }
+
+    // ================= ফায়ারবেস সিকিউর লগিন =================
+    function verifyAdmin() {
+        let email = document.getElementById('adminId').value;
+        let pass = document.getElementById('adminPass').value;
+        
+        // শুধু আইডি লিখলে অটোমেটিক @admin.com যুক্ত করে নিবে (লগিন সহজ করার জন্য)
+        if(!email.includes('@')) { email = email + "@admin.com"; }
+
+        // ফায়ারবেসের রিয়েল লগিন সিস্টেম
+        auth.signInWithEmailAndPassword(email, pass)
+        .then((userCredential) => {
+            document.getElementById('adminId').value = ""; document.getElementById('adminPass').value = "";
+            showToast("লগিন সফল হয়েছে!", "#10b981");
+            showSection('adminDashboard', 'btn-admin');
+            loadAdminData();
+        })
+        .catch((error) => {
+            showToast("ভুল আইডি বা পাসওয়ার্ড!", "#ef4444");
+        });
+    }
+
+    // ================= কাউন্টডাউন টাইমার =================
+    const countDownDate = new Date("Jan 15, 2027 10:00:00").getTime();
+    setInterval(function() {
+        const distance = countDownDate - new Date().getTime();
+        if (distance > 0) {
+            document.getElementById("days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24));
+            document.getElementById("hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            document.getElementById("minutes").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById("seconds").innerText = Math.floor((distance % (1000 * 60)) / 1000);
+        }
+    }, 1000);
+
+    // ================= ডাটা সাবমিট (রেজিস্ট্রেশন) =================
+    document.getElementById('regForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        let submitBtn = document.querySelector('#regForm .submit-btn');
+        let originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> প্রসেসিং হচ্ছে...';
+        submitBtn.disabled = true;
+
+        db.collection("students").add({
+            name: document.getElementById('name').value, 
+            roll: document.getElementById('roll').value,
+            section: document.getElementById('section').value, 
+            phone: document.getElementById('phone').value,
+            tshirt: document.getElementById('tshirt').value, 
+            trxid: document.getElementById('trxid').value,
+            status: "Processing"
+        }).then(() => {
+            showToast("রেজিস্ট্রেশন সফল! পেমেন্ট ভেরিফাই করা হচ্ছে।", "#10b981");
+            document.getElementById('regForm').reset();
+            submitBtn.innerHTML = originalText; submitBtn.disabled = false;
+        }).catch((error) => {
+            showToast("কোথাও ভুল হয়েছে: " + error.message, "#ef4444");
+            submitBtn.innerHTML = originalText; submitBtn.disabled = false;
+        });
+    });
+
+    // ================= স্ট্যাটাস চেক ও রিসিট =================
+    function checkStatus() {
+        let phone = document.getElementById('checkPhone').value;
+        if(!phone) { showToast("ফোন নম্বর দিন!", "#ef4444"); return; }
+        
+        showToast("খোঁজা হচ্ছে...", "#38bdf8");
+        db.collection("students").where("phone", "==", phone).get().then((querySnapshot) => {
+            if (querySnapshot.empty) {
+                showToast("এই নম্বরে কোনো ডাটা নেই!", "#ef4444");
+                document.getElementById('receipt').style.display = "none";
+                document.getElementById('downloadBtn').style.display = "none";
+            } else {
+                querySnapshot.forEach((doc) => {
+                    let data = doc.data();
+                    if (data.status === "Done") {
+                        showToast("আপনার পেমেন্ট কনফার্ম হয়েছে!", "#10b981");
+                        document.getElementById('r_name').innerText = data.name; 
+                        document.getElementById('r_roll').innerText = data.roll;
+                        document.getElementById('r_section').innerText = data.section; 
+                        document.getElementById('r_tshirt').innerText = data.tshirt;
+                        
+                        document.getElementById('receipt').style.display = "block"; 
+                        document.getElementById('downloadBtn').style.display = "inline-block";
+                    } else { 
+                        showToast("আপনার পেমেন্ট এখনো Pending আছে।", "#f59e0b"); 
+                        document.getElementById('receipt').style.display = "none";
+                        document.getElementById('downloadBtn').style.display = "none";
+                    }
+                });
+            }
+        });
+    }
+
+    function downloadPDF() {
+        let element = document.getElementById('receipt');
+        let opt = { margin: 1, filename: 'NGDC_RagDay_Pass.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } };
+        html2pdf().set(opt).from(element).save();
+    }
+
+    // ================= অ্যাডমিন ডাটা লোড ও CSV এক্সপোর্ট =================
+    function loadAdminData() {
+        db.collection("students").onSnapshot((querySnapshot) => {
+            let trHtml = '';
+            querySnapshot.forEach((doc) => {
+                let data = doc.data();
+                let statusColor = data.status === 'Done' ? '#10b981' : '#f59e0b';
+                trHtml += `<tr>
+                    <td>${data.name}</td><td>${data.roll}</td><td>${data.section}</td><td>${data.tshirt}</td><td>${data.trxid}</td>
+                    <td style="color:${statusColor}; font-weight:bold;">${data.status}</td>
+                    <td>${data.status !== 'Done' ? `<button class="approve-btn" onclick="approveStudent('${doc.id}')">Approve</button>` : '<span style="color:#10b981;">✓ Approved</span>'}</td>
+                </tr>`;
+            });
+            document.getElementById('studentList').innerHTML = trHtml;
+        });
+    }
+
+    function approveStudent(id) {
+        if(confirm("পেমেন্টটি সঠিক?")) {
+            // শুধুমাত্র লগিন করা অ্যাডমিনই এই আপডেট করতে পারবে
+            db.collection("students").doc(id).update({ status: "Done" })
+            .then(() => showToast("Approve করা হয়েছে!", "#10b981"))
+            .catch((error) => showToast("আপনার পারমিশন নেই!", "#ef4444"));
+        }
+    }
+
+    function exportTableToCSV(filename) {
+        let csv = []; let rows = document.querySelectorAll("#dataTable tr");
+        for (let i = 0; i < rows.length; i++) {
+            let row = [], cols = rows[i].querySelectorAll("td, th");
+            for (let j = 0; j < cols.length - 1; j++) row.push('"' + cols[j].innerText + '"');
+            csv.push(row.join(","));
+        }
+        let csvFile = new Blob([csv.join("\n")], {type: "text/csv"});
+        let downloadLink = document.createElement("a");
+        downloadLink.download = filename; downloadLink.href = window.URL.createObjectURL(csvFile);
+        downloadLink.style.display = "none"; document.body.appendChild(downloadLink); downloadLink.click();
+    }
+</script>
+</body>
+</html>
