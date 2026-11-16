@@ -17,7 +17,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
-        /* ================= গ্লোবাল ডিজাইন ও কালার গ্রেডিং ================= */
         :root {
             --glow-pink: #ec4899;
             --glow-purple: #8b5cf6;
@@ -42,7 +41,6 @@
             scroll-behavior: smooth;
         }
 
-        /* ================= হেডার ও গ্লাস ন্যাভিগেশন ================= */
         .header {
             background: rgba(11, 15, 25, 0.7);
             backdrop-filter: blur(16px);
@@ -66,7 +64,6 @@
             color: white; border: none; box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
         }
 
-        /* ================= সেকশন ও গ্লাস-মরফিজম কার্ড ================= */
         .container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
         .section { display: none; animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
         .active-section { display: block; }
@@ -82,7 +79,6 @@
         .card h3 { margin-top: 0; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px; font-size: 22px; color: #fff; }
         .card h3 i { color: var(--glow-blue); margin-right: 8px; text-shadow: 0 0 10px rgba(56,189,248,0.5); }
 
-        /* ================= হিউম্যান টোন টেক্সট ও নিয়ন কাউন্টডাউন ================= */
         .hero-text { text-align: center; margin-bottom: 40px; }
         .hero-text h1 { 
             font-size: 32px; margin-bottom: 15px; 
@@ -104,7 +100,6 @@
         }
         .time-box small { font-size: 14px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
 
-        /* ================= ইনপুট ও গ্লোয়িং বাটন ================= */
         input, select {
             width: 100%; padding: 15px; margin: 12px 0; border: 1px solid var(--glass-border);
             border-radius: 12px; font-size: 16px; font-family: inherit; box-sizing: border-box;
@@ -130,7 +125,6 @@
         }
         .submit-btn:disabled { background: #475569; box-shadow: none; cursor: not-allowed; transform: none; }
 
-        /* ================= টাইমলাইন ও FAQ ================= */
         .timeline { list-style: none; padding: 0; margin: 0; }
         .timeline li { padding: 12px 0; border-left: 2px solid var(--glow-purple); margin-left: 10px; padding-left: 25px; position: relative; }
         .timeline li::before { 
@@ -145,7 +139,6 @@
         summary { font-weight: 600; cursor: pointer; outline: none; color: #fff; }
         details p { margin-top: 10px; color: var(--text-dim); line-height: 1.6; }
 
-        /* ================= অ্যাডমিন টেবিল ================= */
         .table-responsive { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 15px; }
         th, td { border: 1px solid var(--glass-border); padding: 14px; text-align: center; color: var(--text-main); }
@@ -155,7 +148,6 @@
         .approve-btn { background: var(--glow-blue); color: #000; border: none; padding: 8px 15px; cursor: pointer; border-radius: 6px; font-weight: bold; }
         .export-btn { background: #10b981; margin-bottom: 15px; width: auto; padding: 10px 20px; box-shadow: 0 0 15px rgba(16,185,129,0.3); border-radius: 8px;}
 
-        /* ================= হোয়াটসঅ্যাপ ও টোস্ট ================= */
         .whatsapp-float {
             position: fixed; bottom: 30px; right: 30px; background-color: #25d366; color: #FFF;
             border-radius: 50%; text-align: center; font-size: 32px; box-shadow: 0 0 20px rgba(37,211,102,0.5);
@@ -175,13 +167,25 @@
         @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 40px; opacity: 1; } }
         @keyframes fadeout { from { bottom: 40px; opacity: 1; } to { bottom: 0; opacity: 0; } }
 
-        /* রিসিট ডিজাইন */
-        #receipt { display: none; padding: 30px; border: 2px solid var(--glow-blue); background: #ffffff; border-radius: 15px; margin-top: 25px; color: #000; box-shadow: 0 0 20px rgba(255,255,255,0.1); }
+        /* পারফেক্ট পিডিএফ রিসিট ডিজাইন (কোনো সাইড কাটবে না) */
+        #receipt { 
+            display: none; 
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px; 
+            background: #ffffff !important; 
+            color: #0f172a !important; 
+            border-radius: 12px; 
+            border: 3px solid #be123c; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
+            box-sizing: border-box;
+            text-align: left;
+        }
     </style>
 </head>
 <body>
 
-    <!-- ================= গ্লাস হেডার ================= -->
     <header class="header">
         <img src="https://i.postimg.cc/rmKVFzqY/Black-and-White-Modern-SEO-Services-Website-Logo.png" alt="NGDC Rag Day 27" class="logo">
         <div class="nav-menu">
@@ -193,9 +197,7 @@
 
     <div class="container">
         
-        <!-- ================= ১. রেজিস্ট্রেশন সেকশন ================= -->
         <div id="regSection" class="section active-section">
-            
             <div class="hero-text">
                 <h1>NGDC Rag Day 27 🎓</h1>
                 <p>বন্ধু, কলেজ জীবনের এই শেষ দিনগুলো কি আর ফিরে আসবে? ক্লাসের আড্ডা, করিডোরের দৌড়াদৌড়ি আর ক্যানটিনের সেই স্মৃতিগুলো একসাথে আরেকবার উদযাপন করার জন্যই আমাদের এই আয়োজন। দেরি না করে আজই নিজের সিট কনফার্ম করে ফেলো!</p>
@@ -207,13 +209,11 @@
                     <div class="time-box"><span id="seconds">00</span><small>সেকেন্ড</small></div>
                 </div>
 
-                <!-- লাইভ রেজিস্ট্রেশন কাউন্টার -->
                 <div style="margin-top: 20px; background: rgba(56, 189, 248, 0.1); border: 1px solid var(--glow-blue); padding: 12px; border-radius: 12px; display: inline-block;">
                     <span style="font-size: 18px; color: var(--glow-blue); font-weight: bold;"><i class="fas fa-users"></i> মোট রেজিস্টার্ড শিক্ষার্থী: <span id="totalRegistered">0</span> জন</span>
                 </div>
             </div>
 
-            <!-- ইভেন্ট শিডিউল -->
             <div class="card">
                 <h3><i class="far fa-clock"></i> ইভেন্ট শিডিউল</h3>
                 <ul class="timeline">
@@ -224,7 +224,6 @@
                 </ul>
             </div>
 
-            <!-- টি-শার্ট প্রিভিউ -->
             <div class="card" style="text-align: center;">
                 <h3><i class="fas fa-tshirt"></i> টি-শার্ট প্রিভিউ</h3>
                 <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
@@ -239,7 +238,6 @@
                 </div>
             </div>
 
-            <!-- রেজিস্ট্রেশন ফর্ম -->
             <div class="card">
                 <h3><i class="fas fa-pen-nib"></i> রেজিস্ট্রেশন ফর্ম</h3>
                 <p style="text-align: center; color: var(--glow-pink); font-weight: bold; font-size: 18px; margin-bottom: 25px; text-shadow: 0 0 10px rgba(236,72,153,0.3);">
@@ -263,7 +261,6 @@
                         <option value="XXL">Double XL (XXL)</option>
                     </select>
                     
-                    <!-- ছবি আপলোডের ফিল্ড -->
                     <div style="grid-column: 1 / -1; margin-top: 5px;">
                         <label style="display:block; margin-bottom:5px; color:var(--text-dim); font-size:14px;">আপনার একটি ছবি আপলোড করুন</label>
                         <input type="file" id="studentPic" accept="image/*" style="padding: 10px; background: rgba(255,255,255,0.05); width: 100%; border: 1px solid var(--glass-border); border-radius: 12px; color: #fff;" required>
@@ -275,7 +272,6 @@
                 </form>
             </div>
 
-            <!-- FAQ -->
             <div class="card">
                 <h3><i class="fas fa-question-circle"></i> সাধারণ জিজ্ঞাসা (FAQ)</h3>
                 <details>
@@ -289,7 +285,6 @@
             </div>
         </div>
 
-        <!-- ================= ২. স্ট্যাটাস ও রিসিট সেকশন ================= -->
         <div id="statusSection" class="section">
             <div class="card" style="text-align: center;">
                 <h2>আপনার স্ট্যাটাস চেক করুন</h2>
@@ -300,19 +295,30 @@
                     <i class="fas fa-search"></i> চেক করুন
                 </button>
 
-                <!-- ছবিসহ ডিজিটাল আইডি কার্ড ও পাস -->
+                <!-- পারফেক্ট সাইজড রিসিট -->
                 <div id="receipt">
-                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px dashed #ccc; padding-bottom: 10px; margin-bottom: 15px;">
-                        <h2 style="margin: 0; color: #0b0f19; font-size: 20px;">NGDC Rag Day 27</h2>
-                        <span style="background: #e8f5e9; color: #2e7d32; padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 14px;">PAID ✓</span>
-                    </div>
-                    <div style="display: flex; gap: 20px; align-items: center; text-align: left; flex-wrap: wrap;">
-                        <img id="r_pic" src="" alt="Student Photo" style="width: 90px; height: 90px; object-fit: cover; border-radius: 50%; border: 3px solid #38bdf8;">
-                        <div>
-                            <p style="margin: 4px 0; font-size: 18px;"><b>নাম:</b> <span id="r_name"></span></p>
-                            <p style="margin: 4px 0; font-size: 16px;"><b>রোল:</b> <span id="r_roll"></span> | <b>সেকশন:</b> <span id="r_section"></span></p>
-                            <p style="margin: 4px 0; font-size: 16px;"><b>টি-শার্ট সাইজ:</b> <span id="r_tshirt"></span></p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #be123c; padding-bottom: 12px; margin-bottom: 15px; background: #fff1f2; margin: -20px -20px 15px -20px; padding: 15px 20px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <img src="https://i.postimg.cc/rmKVFzqY/Black-and-White-Modern-SEO-Services-Website-Logo.png" alt="Logo" style="width: 40px; height: auto; border-radius: 6px;">
+                            <div>
+                                <h2 style="margin: 0; color: #881337; font-size: 18px; font-weight: 800;">NGDC Rag Day 27</h2>
+                                <p style="margin: 0; font-size: 11px; color: #475569;">অফিশিয়াল রেজিস্ট্রেশন পাস</p>
+                            </div>
                         </div>
+                        <span style="background: #dcfce7; color: #166534; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 12px; border: 1px solid #bbf7d0;">PAID ✓</span>
+                    </div>
+
+                    <div style="display: flex; gap: 15px; align-items: center; margin-top: 10px;">
+                        <img id="r_pic" src="" alt="Student Photo" style="width: 75px; height: 75px; object-fit: cover; border-radius: 50%; border: 3px solid #be123c;">
+                        <div style="color: #1e293b; font-size: 14px; line-height: 1.6;">
+                            <p style="margin: 2px 0;"><b>নাম:</b> <span id="r_name" style="font-weight: 600; color: #881337;"></span></p>
+                            <p style="margin: 2px 0;"><b>রোল:</b> <span id="r_roll"></span> | <b>সেকশন:</b> <span id="r_section"></span></p>
+                            <p style="margin: 2px 0;"><b>টি-শার্ট:</b> <span id="r_tshirt" style="font-weight: 600; color: #0284c7;"></span></p>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 15px; border-top: 1px dashed #cbd5e1; padding-top: 8px; text-align: center; font-size: 11px; color: #64748b;">
+                        ইভেন্টের দিন এই পাসটি সাথে রাখুন। #NGDCRag27
                     </div>
                 </div>
 
@@ -322,7 +328,6 @@
             </div>
         </div>
 
-        <!-- ================= ৩. অ্যাডমিন প্যানেল ================= -->
         <div id="adminLoginSection" class="section">
             <div class="card" style="max-width: 400px; margin: auto; text-align: center;">
                 <h2><i class="fas fa-user-shield"></i> অ্যাডমিন লগিন</h2>
@@ -355,16 +360,13 @@
 
     </div>
 
-    <!-- হোয়াটসঅ্যাপ বাটন -->
     <a href="https://wa.me/+8801738991884" target="_blank" class="whatsapp-float">
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <!-- টোস্ট নোটিফিকেশন -->
     <div id="toast">মেসেজ</div>
 
 <script>
-    // ================= ফায়ারবেস কনফিগারেশন =================
     const firebaseConfig = {
         apiKey: "AIzaSyB_fPJPA_4iz-aVj2W2vpJ5yau2XeOkwT0",
         authDomain: "ngdc-rag-day.firebaseapp.com",
@@ -375,12 +377,10 @@
         measurementId: "G-08Y900RS43"
     };
     
-    // ফায়ারবেস ইনিশিয়ালাইজেশন
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const auth = firebase.auth(); 
 
-    // ================= টোস্ট ও নেভিগেশন =================
     function showToast(message, color = "#333") {
         let toast = document.getElementById("toast");
         toast.innerText = message;
@@ -406,7 +406,6 @@
         }
     }
 
-    // ================= ফায়ারবেস সিকিউর লগিন =================
     function verifyAdmin() {
         let email = document.getElementById('adminId').value;
         let pass = document.getElementById('adminPass').value;
@@ -426,7 +425,6 @@
         });
     }
 
-    // লগআউট ফাংশন
     function logoutAdmin() {
         auth.signOut().then(() => {
             showToast("লগআউট সফল হয়েছে!", "#10b981");
@@ -436,13 +434,11 @@
         });
     }
 
-    // লাইভ কাউন্টার আপডেট
     db.collection("students").onSnapshot((snapshot) => {
         let counterEl = document.getElementById("totalRegistered");
         if(counterEl) { counterEl.innerText = snapshot.size; }
     });
 
-    // ================= কাউন্টডাউন টাইমার =================
     const countDownDate = new Date("Jan 15, 2027 10:00:00").getTime();
     setInterval(function() {
         const distance = countDownDate - new Date().getTime();
@@ -454,7 +450,6 @@
         }
     }, 1000);
 
-    // ================= ডাটা সাবমিট (রেজিস্ট্রেশন ও ছবি কম্প্রেস) =================
     document.getElementById('regForm').addEventListener('submit', function(e) {
         e.preventDefault();
         let submitBtn = document.querySelector('#regForm .submit-btn');
@@ -512,7 +507,6 @@
         }
     });
 
-    // ================= স্ট্যাটাস চেক ও রিসিট =================
     function checkStatus() {
         let phone = document.getElementById('checkPhone').value;
         if(!phone) { showToast("ফোন নম্বর দিন!", "#ef4444"); return; }
@@ -548,11 +542,16 @@
 
     function downloadPDF() {
         let element = document.getElementById('receipt');
-        let opt = { margin: 1, filename: 'NGDC_RagDay_Pass.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' } };
+        let opt = { 
+            margin: 0.2, 
+            filename: 'NGDC_RagDay_Pass.pdf', 
+            image: { type: 'jpeg', quality: 0.98 }, 
+            html2canvas: { scale: 2, useCORS: true }, 
+            jsPDF: { unit: 'in', format: [4.5, 5.5], orientation: 'portrait' } 
+        };
         html2pdf().set(opt).from(element).save();
     }
 
-    // ================= অ্যাডমিন ডাটা লোড ও CSV এক্সপোর্ট =================
     function loadAdminData() {
         db.collection("students").orderBy("timestamp", "desc").onSnapshot((querySnapshot) => {
             let trHtml = '';
