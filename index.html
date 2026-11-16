@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NGDC Rag Day 27</title>
     
+    <link rel="icon" type="image/png" href="https://i.postimg.cc/BZYRMC9p/NGDC-RAG-DAY-27-Emblem.png">
     <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -50,7 +51,7 @@
             display: flex; flex-direction: column; align-items: center; padding: 15px 20px;
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
         }
-        .logo { width: 120px; height: auto; margin-bottom: 15px; border-radius: 10px; box-shadow: 0 0 15px rgba(255,255,255,0.05); }
+        .logo { width: 120px; height: auto; margin-bottom: 10px; border-radius: 10px; box-shadow: 0 0 15px rgba(255,255,255,0.05); }
         
         .nav-menu { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
         .nav-menu button {
@@ -81,12 +82,12 @@
 
         .hero-text { text-align: center; margin-bottom: 40px; }
         .hero-text h1 { 
-            font-size: 32px; margin-bottom: 15px; 
+            font-size: 30px; margin-bottom: 15px; line-height: 1.4;
             background: linear-gradient(90deg, #fff, #a5b4fc);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             text-shadow: 0 0 30px rgba(165,180,252,0.3);
         }
-        .hero-text p { font-size: 18px; color: var(--text-dim); line-height: 1.7; }
+        .hero-text p { font-size: 17px; color: var(--text-dim); line-height: 1.8; }
         
         .countdown { display: flex; justify-content: center; gap: 15px; margin-top: 25px; flex-wrap: wrap; }
         .time-box { 
@@ -167,7 +168,6 @@
         @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 40px; opacity: 1; } }
         @keyframes fadeout { from { bottom: 40px; opacity: 1; } to { bottom: 0; opacity: 0; } }
 
-        /* ফিক্সড ও রেসপন্সিভ পিডিএফ রিসিট ডিজাইন */
         #receipt { 
             display: none; 
             width: 100%;
@@ -187,11 +187,14 @@
 <body>
 
     <header class="header">
-        <img src="https://i.postimg.cc/rmKVFzqY/Black-and-White-Modern-SEO-Services-Website-Logo.png" alt="NGDC Rag Day 27" class="logo">
+        <img src="https://i.postimg.cc/BZYRMC9p/NGDC-RAG-DAY-27-Emblem.png" alt="NGDC Rag Day 27" class="logo">
         <div class="nav-menu">
             <button id="btn-reg" class="active-btn" onclick="showSection('regSection', 'btn-reg')"><i class="fas fa-ticket-alt"></i> রেজিস্ট্রেশন</button>
             <button id="btn-status" onclick="showSection('statusSection', 'btn-status')"><i class="fas fa-search"></i> স্ট্যাটাস ও রিসিট</button>
-            <button id="btn-admin" onclick="showAdminLogin()"><i class="fas fa-lock"></i> অ্যাডমিন</button>
+        </div>
+        <!-- অ্যাডমিন প্যানেল অত্যন্ত ছোট ও গোপনীয়ভাবে নিচে রাখা হলো যাতে সবার চোখে না পড়ে -->
+        <div style="text-align: center; margin-top: 6px;">
+            <a href="javascript:void(0)" onclick="showAdminLogin()" style="color: var(--text-dim); font-size: 11px; text-decoration: none; opacity: 0.3;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.3"><i class="fas fa-lock"></i> Admin Portal</a>
         </div>
     </header>
 
@@ -199,8 +202,8 @@
         
         <div id="regSection" class="section active-section">
             <div class="hero-text">
-                <h1>NGDC Rag Day 27 🎓</h1>
-                <p>বন্ধু, কলেজ জীবনের এই শেষ দিনগুলো কি আর ফিরে আসবে? ক্লাসের আড্ডা, করিডোরের দৌড়াদৌড়ি আর ক্যানটিনের সেই স্মৃতিগুলো একসাথে আরেকবার উদযাপন করার জন্যই আমাদের এই আয়োজন। দেরি না করে আজই নিজের সিট কনফার্ম করে ফেলো!</p>
+                <h1>শেষ বেঞ্চ থেকে আজ বিজয়ের মঞ্চে—নিউ গভমেন্ট ডিগ্রি কলেজ, ব্যাচ ২০২৭!</h1>
+                <p>কলেজ জীবনের এই মধুর পথচলার শেষ অধ্যায়ে এসে আমরা জমিয়ে একটা বিদায়ের সুর বাঁধতে যাচ্ছি। স্মৃতিগুলোকে আজ ফ্রেমে বন্দি করার পালা। চলো, সবাই মিলে দিনটাকে অবিস্মরণীয় করে তুলি!</p>
                 
                 <div class="countdown">
                     <div class="time-box"><span id="days">00</span><small>দিন</small></div>
@@ -214,13 +217,26 @@
                 </div>
             </div>
 
+            <!-- আমাদের গল্প / এবাউট সেকশন -->
             <div class="card">
-                <h3><i class="far fa-clock"></i> ইভেন্ট শিডিউল</h3>
+                <h3><i class="fas fa-book-open"></i> পেছনের ফিরে দেখা: দুই বছরের গল্প</h3>
+                <p style="color: var(--text-dim); line-height: 1.8; margin-bottom: 15px;">
+                    মনে পড়ে সেই প্রথম দিনটার কথা? নতুন কলেজ, নতুন মুখ, বুকভরা ভয় আর একটুখানি রোমাঞ্চ নিয়ে গেটে ঢোকা। আজ দেখতে দেখতে দুটি বছর কীভাবে যেন চোখের পলকে ফুরিয়ে গেল। কলেজের বারান্দা, টিফিন পিরিয়ডে কেন্টিনের ভিড়, স্যারদের বকুনি, আর ক্লাসের ফাঁকে লুকিয়ে লুকিয়ে আড্ডা—সবমিলিয়ে আমাদের এই ক্যাম্পাসটা একটা ছোট্ট পরিবারের মতো হয়ে উঠেছিল।
+                </p>
+                <p style="color: var(--text-dim); line-height: 1.8; margin: 0;">
+                    এই দুই বছরের হাসি-কান্না, আনন্দ-বেদনা আর অজস্র স্মৃতির সাক্ষী হয়ে থাকবে আমাদের এই র‍্যাগ ডে। এটি শুধু একটা অনুষ্ঠান নয়, এটি আমাদের একসঙ্গে কাটানো সোনালী দিনগুলোর প্রতি এক বুক ভালোবাসা আর বিদায়ের এক অন্যরকম অনুভূতি।
+                </p>
+            </div>
+    
+            <div class="card">
+                <h3><i class="far fa-clock"></i> যে সোনালী দিনগুলোর অপেক্ষায় পুরো ব্যাচ!</h3>
+                <p style="color: var(--text-dim); margin-bottom: 20px; line-height: 1.7;">বহু জল্পনা-কল্পনা আর জমানো উত্তেজনার পর অবশেষে সেই মাহেন্দ্রক্ষণ চলে এসেছে। আমাদের এই বিশেষ দিনটিকে মাতিয়ে তুলতে থাকছে দারুণ সব আয়োজন:</p>
                 <ul class="timeline">
-                    <li><b>সকাল ১০:০০</b> <p>গেট ওপেন ও স্পেশাল টি-শার্ট বিতরণ</p></li>
-                    <li><b>সকাল ১১:৩০</b> <p>ফ্ল্যাশমব ও কালচারাল প্রোগ্রাম</p></li>
-                    <li><b>দুপুর ০১:৩০</b> <p>গ্র্যান্ড লাঞ্চ ও ফটোসেশন</p></li>
-                    <li><b>বিকাল ০৩:০০</b> <p>লাইভ কনসার্ট ও ডিজে পার্টি</p></li>
+                    <li><b>বর্ণাঢ্য র‍্যালি:</b> <p>কলেজ ক্যাম্পাস থেকে শুরু করে আমাদের উচ্ছ্বাসে মুখর হবে চারপাশ।</p></li>
+                    <li><b>সাংস্কৃতিক সন্ধ্যা:</b> <p>নাচ, গান, আর নিজেদের ভেতরের লুকিয়ে থাকা প্রতিভার দারুণ সব পরিবেশনা।</p></li>
+                    <li><b>টি-শার্ট ও ক্যাপ উন্মোচন:</b> <p>আমাদের ব্যাচের নিজস্ব আইকনিক লোগো আর ড্রেসকোডে সবাই মিলে এক রঙে রাঙা হওয়া।</p></li>
+                    <li><b>স্মৃতিচারণ ও আড্ডা:</b> <p>বন্ধুত্বের গল্পগুলো নতুন করে ঝালিয়ে নেওয়া আর ক্যামেরার ফ্রেমে নিজেদের বন্দি করা।</p></li>
+                    <li><b>ডিজে ও গ্র্যান্ড লাঞ্চ:</b> <p>একসাথে খাওয়া-দাওয়া আর শেষ মুহূর্তের উন্মাদনা।</p></li>
                 </ul>
             </div>
 
@@ -228,11 +244,11 @@
                 <h3><i class="fas fa-tshirt"></i> টি-শার্ট প্রিভিউ</h3>
                 <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 20px;">
                     <div style="background: rgba(0,0,0,0.4); padding: 15px; border-radius: 15px; border: 1px solid var(--glass-border); max-width: 200px;">
-                        <img src="https://i.postimg.cc/L6LbdL0P/front.png" alt="Front Preview" style="width: 100%; border-radius: 10px; margin-bottom: 10px;">
+                        <img id="previewFrontImg" src="https://i.postimg.cc/L6LbdL0P/front.png" alt="Front Preview" style="width: 100%; border-radius: 10px; margin-bottom: 10px;">
                         <b style="color: var(--glow-blue);">সামনের ডিজাইন</b>
                     </div>
                     <div style="background: rgba(0,0,0,0.4); padding: 15px; border-radius: 15px; border: 1px solid var(--glass-border); max-width: 200px;">
-                        <img src="https://i.postimg.cc/T1bH4yFv/back.png" alt="Back Preview" style="width: 100%; border-radius: 10px; margin-bottom: 10px;">
+                        <img id="previewBackImg" src="https://i.postimg.cc/T1bH4yFv/back.png" alt="Back Preview" style="width: 100%; border-radius: 10px; margin-bottom: 10px;">
                         <b style="color: var(--glow-pink);">পেছনের ডিজাইন</b>
                     </div>
                 </div>
@@ -241,7 +257,7 @@
             <div class="card">
                 <h3><i class="fas fa-pen-nib"></i> রেজিস্ট্রেশন ফর্ম</h3>
                 <p style="text-align: center; color: var(--glow-pink); font-weight: bold; font-size: 18px; margin-bottom: 25px; text-shadow: 0 0 10px rgba(236,72,153,0.3);">
-                    বিকাশ সেন্ড মানি: 01738991884 (Personal)<br>ফি: ০০০ টাকা
+                    বিকাশ সেন্ড মানি: 01738991884 (Personal)<br>রেজিস্ট্রেশন ফি: ১০২০ টাকা (১০০০ টাকা তুলতে বিকাশ চার্জ ২০ টাকা সহ)
                 </p>
                 
                 <form id="regForm" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
@@ -272,6 +288,14 @@
                 </form>
             </div>
 
+            <!-- আয়োজকদের নোট / বার্তা -->
+            <div class="card">
+                <h3><i class="fas fa-bullhorn"></i> ব্যাচ ২০২৭-এর প্রতিটি সদস্যের প্রতি</h3>
+                <p style="color: var(--text-dim); line-height: 1.8; margin: 0;">
+                    বন্ধুরা, এই দিনটা শুধু আমাদের কয়েকজনের আয়োজনে সফল হবে না; এই দিনটার আসল প্রাণ তোমরাই! গত দুই বছর ধরে যেভাবে একে অপরের পাশে থেকেছি, ঠিক একইভাবে এই দিনটাকেও জীবনের সেরা একটা দিনে রূপান্তর করতে হবে। কোনো ভুলত্রুটি হলে ক্ষমা সুন্দর দৃষ্টিতে দেখবে এবং সবাই মিলে দিনটাকে উপভোগ করবে। কারণ এই মুহূর্তগুলো আর কখনো ফিরে আসবে না। চলো, একসাথে মিলে একটা ইতিহাস গড়ি!
+                </p>
+            </div>
+    
             <div class="card">
                 <h3><i class="fas fa-question-circle"></i> সাধারণ জিজ্ঞাসা (FAQ)</h3>
                 <details>
@@ -295,11 +319,10 @@
                     <i class="fas fa-search"></i> চেক করুন
                 </button>
 
-                <!-- পারফেক্ট সাইজড রিসিট -->
                 <div id="receipt">
                     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #be123c; padding-bottom: 10px; margin-bottom: 15px; background: #fff1f2; margin: -20px -20px 15px -20px; padding: 15px 20px;">
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <img src="https://i.postimg.cc/rmKVFzqY/Black-and-White-Modern-SEO-Services-Website-Logo.png" alt="Logo" style="width: 38px; height: auto; border-radius: 6px;">
+                            <img src="https://i.postimg.cc/BZYRMC9p/NGDC-RAG-DAY-27-Emblem.png" alt="Logo" style="width: 38px; height: auto; border-radius: 6px;">
                             <div>
                                 <h2 style="margin: 0; color: #881337; font-size: 16px; font-weight: 800;">NGDC Rag Day 27</h2>
                                 <p style="margin: 0; font-size: 10px; color: #475569;">অফিশিয়াল রেজিস্ট্রেশন পাস</p>
@@ -338,6 +361,27 @@
         </div>
 
         <div id="adminDashboard" class="section">
+            
+            <!-- অ্যাডমিন সেটিংস ও কন্ট্রোল বক্স (টি-শার্ট প্রিভিউ ও কাউন্টার এডিট) -->
+            <div class="card" style="margin-top: 25px; border: 1px solid var(--glow-blue);">
+                <h3><i class="fas fa-sliders-h"></i> ওয়েবসাইট সেটিংস (অ্যাডমিন কন্ট্রোল)</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; text-align: left; margin-top: 15px;">
+                    <div>
+                        <label style="display:block; color:var(--text-dim); font-size:14px; margin-bottom:5px;">টি-শার্ট সামনের ছবি পরিবর্তন</label>
+                        <input type="file" id="adminFrontPic" accept="image/*" style="padding:10px; background:rgba(255,255,255,0.05); font-size:14px;">
+                    </div>
+                    <div>
+                        <label style="display:block; color:var(--text-dim); font-size:14px; margin-bottom:5px;">টি-শার্ট পেছনের ছবি পরিবর্তন</label>
+                        <input type="file" id="adminBackPic" accept="image/*" style="padding:10px; background:rgba(255,255,255,0.05); font-size:14px;">
+                    </div>
+                    <div style="grid-column: 1 / -1;">
+                        <label style="display:block; color:var(--text-dim); font-size:14px; margin-bottom:5px;">রেজিস্ট্রেশন সংখ্যা ম্যানুয়ালি এডিট/যোগ করুন (অতিরিক্ত সংখ্যা)</label>
+                        <input type="number" id="adminCountOffset" placeholder="যেমন: 0 বা অতিরিক্ত সংখ্যা" style="margin:0;">
+                    </div>
+                </div>
+                <button class="submit-btn" style="margin-top: 15px; background: linear-gradient(90deg, #10b981, #059669);" onclick="saveAdminSettings()">সেটিংস সেভ করুন</button>
+            </div>
+    
             <div class="card table-responsive">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
                     <h2 style="margin: 0;">অ্যাডমিন কন্ট্রোল প্যানেল</h2>
@@ -393,16 +437,20 @@
     function showSection(sectionId, btnId) {
         document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active-section'));
         document.querySelectorAll('.nav-menu button').forEach(btn => btn.classList.remove('active-btn'));
-        document.getElementById(sectionId).classList.add('active-section');
-        if(btnId) document.getElementById(btnId).classList.add('active-btn');
+        let targetSec = document.getElementById(sectionId);
+        if(targetSec) targetSec.classList.add('active-section');
+        if(btnId) {
+            let b = document.getElementById(btnId);
+            if(b) b.classList.add('active-btn');
+        }
     }
 
     function showAdminLogin() {
         if (auth.currentUser) {
-            showSection('adminDashboard', 'btn-admin');
+            showSection('adminDashboard', null);
             loadAdminData();
         } else {
-            showSection('adminLoginSection', 'btn-admin');
+            showSection('adminLoginSection', null);
         }
     }
 
@@ -416,7 +464,7 @@
         .then((userCredential) => {
             document.getElementById('adminId').value = ""; document.getElementById('adminPass').value = "";
             showToast("লগিন সফল হয়েছে!", "#10b981");
-            showSection('adminDashboard', 'btn-admin');
+            showSection('adminDashboard', null);
             loadAdminData();
         })
         .catch((error) => {
@@ -428,15 +476,89 @@
     function logoutAdmin() {
         auth.signOut().then(() => {
             showToast("লগআউট সফল হয়েছে!", "#10b981");
-            showSection('adminLoginSection', 'btn-admin');
+            showSection('regSection', 'btn-reg');
         }).catch((error) => {
             showToast("লগআউট ফেইলড!", "#ef4444");
         });
     }
 
+    // ওয়েবসাইট সেটিংস লোড এবং রিয়েল-টাইম সিঙ্ক করা
+    function loadWebsiteSettings() {
+        db.collection("settings").doc("config").onSnapshot((doc) => {
+            if (doc.exists) {
+                let data = doc.data();
+                if (data.frontImg) {
+                    let fImg = document.getElementById("previewFrontImg");
+                    if(fImg) fImg.src = data.frontImg;
+                }
+                if (data.backImg) {
+                    let bImg = document.getElementById("previewBackImg");
+                    if(bImg) bImg.src = data.backImg;
+                }
+                if(document.getElementById('adminCountOffset')) {
+                    document.getElementById('adminCountOffset').value = data.countOffset || 0;
+                }
+            }
+        });
+    }
+    loadWebsiteSettings();
+
+    // অ্যাডমিন সেটিংস সেভ ফাংশন
+    function saveAdminSettings() {
+        let fFile = document.getElementById('adminFrontPic').files[0];
+        let bFile = document.getElementById('adminBackPic').files[0];
+        let offsetInput = document.getElementById('adminCountOffset').value;
+        let offsetVal = offsetInput !== "" ? parseInt(offsetInput) : 0;
+
+        showToast("সেটিংস সেভ হচ্ছে...", "#38bdf8");
+
+        let updateData = { countOffset: offsetVal };
+        let promises = [];
+
+        if (fFile) {
+            promises.push(new Promise((resolve) => {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    updateData.frontImg = e.target.result;
+                    resolve();
+                };
+                reader.readAsDataURL(fFile);
+            }));
+        }
+
+        if (bFile) {
+            promises.push(new Promise((resolve) => {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    updateData.backImg = e.target.result;
+                    resolve();
+                };
+                reader.readAsDataURL(bFile);
+            }));
+        }
+
+        Promise.all(promises).then(() => {
+            db.collection("settings").doc("config").set(updateData, { merge: true })
+            .then(() => {
+                showToast("সেটিংস সফলভাবে আপডেট হয়েছে!", "#10b981");
+            })
+            .catch((err) => {
+                showToast("ত্রুটি: " + err.message, "#ef4444");
+            });
+        });
+    }
+
+    // লাইভ কাউন্টডাউন ও কাউন্টার
     db.collection("students").onSnapshot((snapshot) => {
-        let counterEl = document.getElementById("totalRegistered");
-        if(counterEl) { counterEl.innerText = snapshot.size; }
+        db.collection("settings").doc("config").get().then((doc) => {
+            let offset = 0;
+            if (doc.exists && doc.data().countOffset) {
+                offset = parseInt(doc.data().countOffset);
+            }
+            let total = snapshot.size + offset;
+            let counterEl = document.getElementById("totalRegistered");
+            if(counterEl) { counterEl.innerText = total; }
+        });
     });
 
     const countDownDate = new Date("Jan 15, 2027 10:00:00").getTime();
@@ -543,10 +665,10 @@
     function downloadPDF() {
         let element = document.getElementById('receipt');
         let opt = { 
-            margin: 0.2, 
+            margin: 0.1, 
             filename: 'NGDC_RagDay_Pass.pdf', 
             image: { type: 'jpeg', quality: 0.98 }, 
-            html2canvas: { scale: 2, useCORS: true, letterRendering: true }, 
+            html2canvas: { scale: 3, useCORS: true, letterRendering: true }, 
             jsPDF: { unit: 'in', format: [4.2, 4.8], orientation: 'portrait' } 
         };
         html2pdf().set(opt).from(element).save();
