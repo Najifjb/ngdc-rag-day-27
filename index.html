@@ -233,6 +233,7 @@
                     <input type="text" id="roll" placeholder="কলেজ রোল নম্বর" required>
                     <input type="text" id="section" placeholder="বিভাগ/সেকশন (যেমন: Commerce)" required>
                     <input type="tel" id="phone" placeholder="সচল ফোন নম্বর" required>
+                    <input type="email" id="email" placeholder="ইমেইল অ্যাড্রেস" required>
                     
                     <select id="tshirt" required>
                         <option value="">টি-শার্ট সাইজ নির্বাচন করুন</option>
@@ -253,7 +254,7 @@
                 <h3><i class="fas fa-question-circle"></i> সাধারণ জিজ্ঞাসা (FAQ)</h3>
                 <details>
                     <summary>ভুল নম্বরে টাকা পাঠালে কী করব?</summary>
-                    <p>দয়া করে সাবধানে আমাদের নির্ধারিত নম্বরেই সেন্ড মানি করবেন। ভুল হলে আমরা দায়ী থাকব না, তবে দ্রুত হোয়াটসঅ্যাপে যোগাযোগ করলে আমরা চেক করে দেখব।</p>
+                    <p>দয়া করে সাবধানে আমাদের নির্ধারিত নম্বরেই সেন্ড মানি করবেন। ভুল হলে আমরা দায়ী থাকব গঠন, তবে দ্রুত হোয়াটসঅ্যাপে যোগাযোগ করলে আমরা চেক করে দেখব।</p>
                 </details>
                 <details>
                     <summary>পেমেন্ট কতক্ষণের মধ্যে অ্যাপ্রুভ হবে?</summary>
@@ -303,13 +304,16 @@
             <div class="card table-responsive">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
                     <h2 style="margin: 0;">অ্যাডমিন কন্ট্রোল প্যানেল</h2>
-                    <button class="submit-btn export-btn" onclick="exportTableToCSV('RagDay_Data.csv')"><i class="fas fa-file-excel"></i> Export to CSV</button>
+                    <div>
+                        <button class="submit-btn export-btn" onclick="exportTableToCSV('RagDay_Data.csv')" style="margin-right: 10px;"><i class="fas fa-file-excel"></i> Export to CSV</button>
+                        <button class="submit-btn export-btn" onclick="logoutAdmin()" style="background: #ef4444; box-shadow: 0 0 15px rgba(239,68,68,0.3);"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                    </div>
                 </div>
                 
                 <table id="dataTable">
                     <thead>
                         <tr>
-                            <th>নাম</th><th>রোল</th><th>সেকশন</th><th>টি-শার্ট</th><th>TrxID</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th>
+                            <th>নাম</th><th>রোল</th><th>সেকশন</th><th>ইমেইল</th><th>টি-শার্ট</th><th>TrxID</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th>
                         </tr>
                     </thead>
                     <tbody id="studentList"></tbody>
@@ -328,9 +332,9 @@
     <div id="toast">মেসেজ</div>
 
 <script>
-    // ================= ফায়ারবেস কনফিগারেশন (আপনার আসল কোড) =================
+    // ================= ফায়ারবেস কনফিগারেশন =================
     const firebaseConfig = {
-        apiKey: "AIzaSyDZnVFgP7MFpepqnbdk4AF5rlPg85AYDIA",
+        apiKey: "AIzaSyB_fPJPA_4iz-aVj2W2vpJ5yau2XeOkwT0",
         authDomain: "ngdc-rag-day.firebaseapp.com",
         projectId: "ngdc-rag-day",
         storageBucket: "ngdc-rag-day.firebasestorage.app",
@@ -392,7 +396,6 @@
             alert("আসল সমস্যা হলো: " + error.message); 
             showToast("লগিন ফেইলড!", "#ef4444");
         });
-        });
     }
 
     // ================= কাউন্টডাউন টাইমার =================
@@ -420,6 +423,7 @@
             roll: document.getElementById('roll').value,
             section: document.getElementById('section').value, 
             phone: document.getElementById('phone').value,
+            email: document.getElementById('email').value,
             tshirt: document.getElementById('tshirt').value, 
             trxid: document.getElementById('trxid').value,
             status: "Processing"
@@ -473,6 +477,16 @@
     }
 
     // ================= অ্যাডমিন ডাটা লোড ও CSV এক্সপোর্ট =================
+    
+    function logoutAdmin() {
+        auth.signOut().then(() => {
+            showToast("লগআউট সফল হয়েছে!", "#10b981");
+            showSection('adminLoginSection', 'btn-admin');
+        }).catch((error) => {
+            showToast("লগআউট ফেইলড!", "#ef4444");
+        });
+    }
+    
     function loadAdminData() {
         db.collection("students").onSnapshot((querySnapshot) => {
             let trHtml = '';
@@ -480,7 +494,7 @@
                 let data = doc.data();
                 let statusColor = data.status === 'Done' ? '#10b981' : '#f59e0b';
                 trHtml += `<tr>
-                    <td>${data.name}</td><td>${data.roll}</td><td>${data.section}</td><td>${data.tshirt}</td><td>${data.trxid}</td>
+                    <td>${data.name}</td><td>${data.roll}</td><td>${data.section}</td><td>${data.email || 'N/A'}</td><td>${data.tshirt}</td><td>${data.trxid}</td>
                     <td style="color:${statusColor}; font-weight:bold;">${data.status}</td>
                     <td>${data.status !== 'Done' ? `<button class="approve-btn" onclick="approveStudent('${doc.id}')">Approve</button>` : '<span style="color:#10b981;">✓ Approved</span>'}</td>
                 </tr>`;
@@ -505,7 +519,8 @@
             for (let j = 0; j < cols.length - 1; j++) row.push('"' + cols[j].innerText + '"');
             csv.push(row.join(","));
         }
-        let csvFile = new Blob([csv.join("\n")], {type: "text/csv"});
+        let csvFile = new Blob([csv.join("
+")], {type: "text/csv"});
         let downloadLink = document.createElement("a");
         downloadLink.download = filename; downloadLink.href = window.URL.createObjectURL(csvFile);
         downloadLink.style.display = "none"; document.body.appendChild(downloadLink); downloadLink.click();
