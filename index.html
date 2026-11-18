@@ -101,16 +101,16 @@
         }
         .time-box small { font-size: 14px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
 
-        input, select {
+        input, select, textarea {
             width: 100%; padding: 15px; margin: 12px 0; border: 1px solid var(--glass-border);
             border-radius: 12px; font-size: 16px; font-family: inherit; box-sizing: border-box;
             background: rgba(0,0,0,0.3); color: #fff; transition: 0.3s;
         }
-        input:focus, select:focus { 
+        input:focus, select:focus, textarea:focus { 
             border-color: var(--glow-purple); outline: none; background: rgba(0,0,0,0.5);
             box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
         }
-        input::placeholder { color: #64748b; }
+        input::placeholder, textarea::placeholder { color: #64748b; }
         select option { background: #1e293b; color: #fff; }
 
         .submit-btn {
@@ -183,6 +183,22 @@
             box-sizing: border-box;
             text-align: left;
         }
+
+        /* Map Container Styling */
+        .map-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            margin-top: 15px;
+        }
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
     </style>
 </head>
 <body>
@@ -247,7 +263,21 @@
                 </div>
             </div>
 
-            <!-- রেজিস্ট্রেশন ফর্ম কার্ডে আইডি যুক্ত করা হয়েছে যাতে স্ক্রোল করে সরাসরি এখানে আসা যায় -->
+            <!-- ইভেন্টের লোকেশন ও ম্যাপ ইন্টিগ্রেশন সেকশন (টি-শার্ট প্রিভিউ বক্সের নিচে সরানো হয়েছে) -->
+            <div class="card">
+                <h3><i class="fas fa-map-marked-alt"></i> ইভেন্টের লোকেশন ও ভেন্যু</h3>
+                <p id="venueDesc" style="color: var(--text-dim); line-height: 1.8; margin-bottom: 15px;">
+                    আমাদের র‍্যাগ ডে উৎসবটি নিউ গভমেন্ট ডিগ্রি কলেজের মূল অডিটোরিয়াম প্রাঙ্গণে অনুষ্ঠিত হবে। কলেজ গেট দিয়ে প্রবেশ করে সোজা সামনে এগোলেই উৎসবের মূল মঞ্চ দেখতে পাবেন।
+                </p>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px; color: var(--glow-blue); font-weight: bold;">
+                    <i class="fas fa-map-pin"></i> <span id="venueNameText">ভেন্যু: নিউ গভমেন্ট ডিগ্রি কলেজ অডিটোরিয়াম, রাজশাহী</span>
+                </div>
+                <div class="map-container" id="mapEmbedContainer">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3627.8188147817757!2d88.587889!3d24.368812!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3fbef023d8c47b59%3A0xc42e05cb30869a83!2sNew%20Government%20Degree%20College%2C%20Rajshahi!5e0!3m2!1sen!2sbd!4v1650000000000!5m2!1sen!2sbd" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+
+            <!-- রেজিস্ট্রেশন ফর্ম কার্ডে আইডি যুক্ত করা হয়েছে -->
             <div class="card" id="regFormCard">
                 <h3><i class="fas fa-pen-nib"></i> রেজিস্ট্রেশন ফর্ম</h3>
                 <p style="text-align: center; color: var(--glow-pink); font-weight: bold; font-size: 18px; margin-bottom: 25px; text-shadow: 0 0 10px rgba(236,72,153,0.3);">
@@ -302,7 +332,7 @@
                 </details>
             </div>
 
-            <!-- অ্যাডমিন প্যানেল একদম নিচে গোপনীয়ভাবে রাখা হলো -->
+            <!-- অ্যাডমিন প্যানেল লিংক -->
             <div style="text-align: center; margin: 30px 0 10px 0;">
                 <a href="javascript:void(0)" onclick="showAdminLogin()" style="color: var(--text-dim); font-size: 11px; text-decoration: none; opacity: 0.3;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.3"><i class="fas fa-lock"></i> Admin Portal</a>
             </div>
@@ -373,7 +403,20 @@
                         <label style="display:block; color:var(--text-dim); font-size:14px; margin-bottom:5px;">টি-শার্ট পেছনের ছবি পরিবর্তন</label>
                         <input type="file" id="adminBackPic" accept="image/*" style="padding:10px; background:rgba(255,255,255,0.05); font-size:14px;">
                     </div>
+
+                    <div style="grid-column: 1 / -1; border-top: 1px solid var(--glass-border); padding-top: 15px; margin-top: 5px;">
+                        <h4 style="color: var(--glow-blue); margin: 0 0 10px 0;"><i class="fas fa-map-marked-alt"></i> ইভেন্ট ভেন্যু ও গুগল ম্যাপ সেটিংস</h4>
+                    </div>
                     <div style="grid-column: 1 / -1;">
+                        <label style="display:block; color:var(--text-dim); font-size:14px; margin-bottom:5px;">ভেন্যুর নাম ও সংক্ষিপ্ত বিবরণ</label>
+                        <textarea id="adminVenueDesc" rows="3" placeholder="যেমন: নিউ গভমেন্ট ডিগ্রি কলেজ অডিটোরিয়াম, রাজশাহী..." style="margin:0;"></textarea>
+                    </div>
+                    <div style="grid-column: 1 / -1;">
+                        <label style="display:block; color:var(--text-dim); font-size:14px; margin-bottom:5px;">গুগল ম্যাপ এমবেড কোড (Iframe src লিংক অথবা সম্পূর্ণ iframe)</label>
+                        <textarea id="adminMapIframe" rows="2" placeholder="Google Maps Embed URL or iframe..." style="margin:0; font-size: 14px;"></textarea>
+                    </div>
+
+                    <div style="grid-column: 1 / -1; border-top: 1px solid var(--glass-border); padding-top: 15px; margin-top: 5px;">
                         <label style="display:block; color:var(--text-dim); font-size:14px; margin-bottom:5px;">রেজিস্ট্রেশন সংখ্যা ম্যানুয়ালি এডিট/যোগ করুন (অতিরিক্ত সংখ্যা)</label>
                         <input type="number" id="adminCountOffset" placeholder="যেমন: 0 বা অতিরিক্ত সংখ্যা" style="margin:0;">
                     </div>
@@ -488,6 +531,9 @@
         });
     }
 
+    const defaultVenueDesc = "আমাদের র‍্যাগ ডে উৎসবটি নিউ গভমেন্ট ডিগ্রি কলেজের মূল অডিটোরিয়াম প্রাঙ্গণে অনুষ্ঠিত হবে। কলেজ গেট দিয়ে প্রবেশ করে সোজা সামনে এগোলেই উৎসবের মূল মঞ্চ দেখতে পাবেন।";
+    const defaultMapUrl = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3627.8188147817757!2d88.587889!3d24.368812!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3fbef023d8c47b59%3A0xc42e05cb30869a83!2sNew%20Government%20Degree%20College%2C%20Rajshahi!5e0!3m2!1sen!2sbd!4v1650000000000!5m2!1sen!2sbd";
+
     function loadWebsiteSettings() {
         db.collection("students").doc("_site_config_settings").onSnapshot((doc) => {
             if (doc.exists) {
@@ -500,6 +546,27 @@
                     let bImg = document.getElementById("previewBackImg");
                     if(bImg) bImg.src = data.backImg;
                 }
+
+                let venueDescEl = document.getElementById("venueDesc");
+                if(venueDescEl) venueDescEl.innerText = data.venueDesc || defaultVenueDesc;
+
+                let mapContainer = document.getElementById("mapEmbedContainer");
+                let mapUrl = data.mapIframe || defaultMapUrl;
+                if(mapUrl.includes("<iframe")) {
+                    mapContainer.innerHTML = mapUrl;
+                } else {
+                    mapContainer.innerHTML = `<iframe src="${mapUrl}" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
+                }
+
+                let vDescField = document.getElementById('adminVenueDesc');
+                if(vDescField && document.activeElement !== vDescField) {
+                    vDescField.value = data.venueDesc || defaultVenueDesc;
+                }
+                let mMapField = document.getElementById('adminMapIframe');
+                if(mMapField && document.activeElement !== mMapField) {
+                    mMapField.value = data.mapIframe || defaultMapUrl;
+                }
+
                 let offsetField = document.getElementById('adminCountOffset');
                 if(offsetField && document.activeElement !== offsetField) {
                     offsetField.value = data.countOffset !== undefined ? data.countOffset : 0;
@@ -513,6 +580,11 @@
                     let data = JSON.parse(localConfig);
                     if (data.frontImg) { let fImg = document.getElementById("previewFrontImg"); if(fImg) fImg.src = data.frontImg; }
                     if (data.backImg) { let bImg = document.getElementById("previewBackImg"); if(bImg) bImg.src = data.backImg; }
+                    if (data.venueDesc) { let vd = document.getElementById("venueDesc"); if(vd) vd.innerText = data.venueDesc; }
+                    if (data.mapIframe) { 
+                        let mc = document.getElementById("mapEmbedContainer");
+                        if(mc) mc.innerHTML = data.mapIframe.includes("<iframe") ? data.mapIframe : `<iframe src="${data.mapIframe}" allowfullscreen="" loading="lazy"></iframe>`;
+                    }
                     let offsetField = document.getElementById('adminCountOffset');
                     if(offsetField) offsetField.value = data.countOffset || 0;
                     window.adminCountOffsetVal = data.countOffset || 0;
@@ -525,12 +597,19 @@
     function saveAdminSettings() {
         let fFile = document.getElementById('adminFrontPic').files[0];
         let bFile = document.getElementById('adminBackPic').files[0];
+        let venueDescVal = document.getElementById('adminVenueDesc').value;
+        let mapIframeVal = document.getElementById('adminMapIframe').value;
         let offsetInput = document.getElementById('adminCountOffset').value;
         let offsetVal = offsetInput !== "" ? parseInt(offsetInput) : 0;
 
         showToast("ক্লাউডে সেটিংস সেভ হচ্ছে...", "#38bdf8");
 
-        let updateData = { countOffset: offsetVal, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
+        let updateData = { 
+            countOffset: offsetVal, 
+            venueDesc: venueDescVal || defaultVenueDesc,
+            mapIframe: mapIframeVal || defaultMapUrl,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp() 
+        };
         let promises = [];
 
         if (fFile) {
@@ -568,6 +647,14 @@
                 if (updateData.backImg) {
                     let bImg = document.getElementById("previewBackImg");
                     if(bImg) bImg.src = updateData.backImg;
+                }
+
+                let vdEl = document.getElementById("venueDesc");
+                if(vdEl) vdEl.innerText = updateData.venueDesc;
+
+                let mcEl = document.getElementById("mapEmbedContainer");
+                if(mcEl) {
+                    mcEl.innerHTML = updateData.mapIframe.includes("<iframe") ? updateData.mapIframe : `<iframe src="${updateData.mapIframe}" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>`;
                 }
 
                 showToast("সেটিংস সফলভাবে ক্লাউডে সেভ হয়েছে ও সব ডিভাইসে সিঙ্ক হয়ে গেছে!", "#10b981");
@@ -758,7 +845,6 @@
         }
     }
 
-    // নতুন ডিলিট ফাংশন
     function deleteStudent(id) {
         if(confirm("আপনি কি নিশ্চিতভাবে এই রেজিস্ট্রেশনটি ডিলিট করতে চান?")) {
             db.collection("students").doc(id).delete()
