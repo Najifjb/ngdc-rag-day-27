@@ -48,15 +48,15 @@
             -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--glass-border);
             position: sticky; top: 0; z-index: 100;
-            display: flex; flex-direction: column; align-items: center; padding: 15px 20px;
+            display: flex; flex-direction: column; align-items: center; padding: 8px 15px;
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
         }
-        .logo { width: 120px; height: auto; margin-bottom: 10px; border-radius: 10px; box-shadow: 0 0 15px rgba(255,255,255,0.05); }
+        .logo { width: 75px; height: auto; margin-bottom: 8px; border-radius: 8px; box-shadow: 0 0 15px rgba(255,255,255,0.05); }
         
         .nav-menu { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
         .nav-menu button {
             background: rgba(255, 255, 255, 0.05); color: var(--text-dim);
-            border: 1px solid var(--glass-border); padding: 10px 20px; font-size: 16px; font-weight: 600;
+            border: 1px solid var(--glass-border); padding: 8px 16px; font-size: 15px; font-weight: 600;
             font-family: inherit; cursor: pointer; border-radius: 30px; transition: all 0.4s ease;
         }
         .nav-menu button:hover { background: rgba(255,255,255,0.1); color: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.1); }
@@ -192,10 +192,6 @@
             <button id="btn-reg" class="active-btn" onclick="showSection('regSection', 'btn-reg')"><i class="fas fa-ticket-alt"></i> রেজিস্ট্রেশন</button>
             <button id="btn-status" onclick="showSection('statusSection', 'btn-status')"><i class="fas fa-search"></i> স্ট্যাটাস ও রিসিট</button>
         </div>
-        <!-- অ্যাডমিন প্যানেল অত্যন্ত ছোট ও গোপনীয়ভাবে নিচে রাখা হলো -->
-        <div style="text-align: center; margin-top: 6px;">
-            <a href="javascript:void(0)" onclick="showAdminLogin()" style="color: var(--text-dim); font-size: 11px; text-decoration: none; opacity: 0.3;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.3"><i class="fas fa-lock"></i> Admin Portal</a>
-        </div>
     </header>
 
     <div class="container">
@@ -302,6 +298,11 @@
                     <summary>পেমেন্ট কতক্ষণের মধ্যে অ্যাপ্রুভ হবে?</summary>
                     <p>ফর্ম পূরণের সাধারণত ২ থেকে ১২ ঘণ্টার মধ্যে অ্যাডমিন প্যানেল থেকে ম্যানুয়ালি চেক করে পেমেন্ট অ্যাপ্রুভ করা হয়।</p>
                 </details>
+            </div>
+
+            <!-- অ্যাডমিন প্যানেল একদম নিচে গোপনীয়ভাবে রাখা হলো (৩য় স্ক্রিনশট অনুযায়ী) -->
+            <div style="text-align: center; margin: 30px 0 10px 0;">
+                <a href="javascript:void(0)" onclick="showAdminLogin()" style="color: var(--text-dim); font-size: 11px; text-decoration: none; opacity: 0.3;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.3"><i class="fas fa-lock"></i> Admin Portal</a>
             </div>
         </div>
 
@@ -498,7 +499,6 @@
                 window.adminCountOffsetVal = data.countOffset !== undefined ? parseInt(data.countOffset) : 0;
             }
         }, (error) => {
-            // যদি ক্লাউড থেকে সরাসরি না পায়, লোকাল ব্যাকআপ থেকে দেখাবে
             let localConfig = localStorage.getItem("ngdc_config");
             if (localConfig) {
                 try {
@@ -549,7 +549,6 @@
         }
 
         Promise.all(promises).then(() => {
-            // ফায়ারবেসে সেভ করা হচ্ছে যাতে সব ডিভাইসে লাইভ সিঙ্ক হয়
             db.collection("students").doc("_site_config_settings").set(updateData, { merge: true })
             .then(() => {
                 localStorage.setItem("ngdc_config", JSON.stringify(updateData));
