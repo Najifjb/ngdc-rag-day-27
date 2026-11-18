@@ -146,7 +146,8 @@
         th { background: rgba(255,255,255,0.05); font-weight: 600; color: var(--glow-blue); }
         tr:hover { background: rgba(255,255,255,0.02); }
         
-        .approve-btn { background: var(--glow-blue); color: #000; border: none; padding: 8px 15px; cursor: pointer; border-radius: 6px; font-weight: bold; }
+        .approve-btn { background: var(--glow-blue); color: #000; border: none; padding: 8px 12px; cursor: pointer; border-radius: 6px; font-weight: bold; margin-right: 5px; }
+        .delete-btn { background: #ef4444; color: #fff; border: none; padding: 8px 12px; cursor: pointer; border-radius: 6px; font-weight: bold; }
         .export-btn { background: #10b981; margin-bottom: 15px; width: auto; padding: 10px 20px; box-shadow: 0 0 15px rgba(16,185,129,0.3); border-radius: 8px;}
 
         .whatsapp-float {
@@ -301,7 +302,7 @@
                 </details>
             </div>
 
-            <!-- অ্যাডমিন প্যানেল একদম নিচে গোপনীয়ভাবে রাখা হলো (৩য় স্ক্রিনশট অনুযায়ী) -->
+            <!-- অ্যাডমিন প্যানেল একদম নিচে গোপনীয়ভাবে রাখা হলো -->
             <div style="text-align: center; margin: 30px 0 10px 0;">
                 <a href="javascript:void(0)" onclick="showAdminLogin()" style="color: var(--text-dim); font-size: 11px; text-decoration: none; opacity: 0.3;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.3"><i class="fas fa-lock"></i> Admin Portal</a>
             </div>
@@ -432,7 +433,6 @@
         setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 4000);
     }
 
-    // রেজিস্ট্রেশন বাটনে ক্লিক করলে স্লাইড হয়ে ফর্মের অংশে নিয়ে যাওয়ার ফাংশন
     function showSection(sectionId, btnId) {
         document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active-section'));
         document.querySelectorAll('.nav-menu button').forEach(btn => btn.classList.remove('active-btn'));
@@ -443,7 +443,6 @@
             if(b) b.classList.add('active-btn');
         }
 
-        // যদি রেজিস্ট্রেশন সেকশন সিলেক্ট করা হয়, তবে সরাসরি ফর্মের দিকে স্ক্রোল করবে
         if(sectionId === 'regSection') {
             let formCard = document.getElementById('regFormCard');
             if(formCard) {
@@ -489,7 +488,6 @@
         });
     }
 
-    // ওয়েবসাইট সেটিংস লোড এবং রিয়েল-টাইম গ্লোবাল ক্লাউড সিঙ্ক
     function loadWebsiteSettings() {
         db.collection("students").doc("_site_config_settings").onSnapshot((doc) => {
             if (doc.exists) {
@@ -524,7 +522,6 @@
     }
     loadWebsiteSettings();
 
-    // অ্যাডমিন সেটিংস সেভ ফাংশন (সরাসরি ফায়ারবেস ক্লাউডে সেভ হবে যা সব ডিভাইসে সিঙ্ক করবে)
     function saveAdminSettings() {
         let fFile = document.getElementById('adminFrontPic').files[0];
         let bFile = document.getElementById('adminBackPic').files[0];
@@ -581,7 +578,6 @@
         });
     }
 
-    // লাইভ কাউন্টার (ডেটাবেসের মোট শিক্ষার্থী + অ্যাডমিন কাউন্ট অফসেট)
     db.collection("students").onSnapshot((snapshot) => {
         let studentCount = 0;
         snapshot.forEach((doc) => {
@@ -723,7 +719,6 @@
         html2pdf().set(opt).from(element).save();
     }
 
-    // অ্যাডমিন ডাটা লোড (কনফিগ ডক বাদ দিয়ে শুধু স্টুডেন্টদের তালিকা ও সিরিয়াল নম্বর)
     function loadAdminData() {
         db.collection("students").orderBy("timestamp", "desc").onSnapshot((querySnapshot) => {
             let trHtml = '';
@@ -745,7 +740,10 @@
                     <td>${data.tshirt}</td>
                     <td>${data.trxid}</td>
                     <td style="color:${statusColor}; font-weight:bold;">${data.status}</td>
-                    <td>${data.status !== 'Done' ? `<button class="approve-btn" onclick="approveStudent('${doc.id}')">Approve</button>` : '<span style="color:#10b981;">✓ Approved</span>'}</td>
+                    <td>
+                        ${data.status !== 'Done' ? `<button class="approve-btn" onclick="approveStudent('${doc.id}')">Approve</button>` : '<span style="color:#10b981; display:inline-block; margin-right:5px;">✓</span>'}
+                        <button class="delete-btn" onclick="deleteStudent('${doc.id}')"><i class="fas fa-trash-alt"></i></button>
+                    </td>
                 </tr>`;
             });
             document.getElementById('studentList').innerHTML = trHtml;
@@ -757,6 +755,15 @@
             db.collection("students").doc(id).update({ status: "Done" })
             .then(() => showToast("Approve করা হয়েছে!", "#10b981"))
             .catch((error) => showToast("অনুমতি নেই!", "#ef4444"));
+        }
+    }
+
+    // নতুন ডিলিট ফাংশন
+    function deleteStudent(id) {
+        if(confirm("আপনি কি নিশ্চিতভাবে এই রেজিস্ট্রেশনটি ডিলিট করতে চান?")) {
+            db.collection("students").doc(id).delete()
+            .then(() => showToast("সফলভাবে ডিলিট করা হয়েছে!", "#ef4444"))
+            .catch((error) => showToast("ডিলিট করতে সমস্যা হয়েছে: " + error.message, "#ef4444"));
         }
     }
 
