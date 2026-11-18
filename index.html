@@ -158,6 +158,43 @@
         }
         .whatsapp-float:hover { transform: scale(1.1); box-shadow: 0 0 30px rgba(37,211,102,0.8); }
 
+        /* QR Code Floating Widget Styling (এক সাইডে সুন্দরভাবে ভাসমান বা ফিক্সড রাখার জন্য) */
+        .qr-side-widget {
+            position: fixed;
+            bottom: 110px;
+            right: 30px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 12px;
+            border-radius: 16px;
+            text-align: center;
+            z-index: 99;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            transition: 0.3s;
+        }
+        .qr-side-widget:hover {
+            border-color: var(--glow-purple);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+        }
+        .qr-side-widget img {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            display: block;
+            background: #fff;
+            padding: 5px;
+        }
+        .qr-side-widget span {
+            display: block;
+            font-size: 11px;
+            color: var(--text-dim);
+            margin-top: 6px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
         #toast {
             visibility: hidden; min-width: 250px; background: rgba(15, 23, 42, 0.9); color: #fff;
             backdrop-filter: blur(10px); border: 1px solid var(--glass-border);
@@ -198,6 +235,22 @@
             width: 100%;
             height: 100%;
             border: 0;
+        }
+
+        /* মোবাইল স্ক্রিনের জন্য QR Widget একটু ছোট ও নিখুঁত করা হলো */
+        @media (max-width: 768px) {
+            .qr-side-widget {
+                bottom: 105px;
+                right: 15px;
+                padding: 8px;
+            }
+            .qr-side-widget img {
+                width: 75px;
+                height: 75px;
+            }
+            .qr-side-widget span {
+                font-size: 9px;
+            }
         }
     </style>
 </head>
@@ -263,7 +316,7 @@
                 </div>
             </div>
 
-            <!-- ইভেন্টের লোকেশন ও ম্যাপ ইন্টিগ্রেশন সেকশন (টি-শার্ট প্রিভিউ বক্সের নিচে সরানো হয়েছে) -->
+            <!-- ইভেন্টের লোকেশন ও ম্যাপ ইন্টিগ্রেশন সেকশন -->
             <div class="card">
                 <h3><i class="fas fa-map-marked-alt"></i> ইভেন্টের লোকেশন ও ভেন্যু</h3>
                 <p id="venueDesc" style="color: var(--text-dim); line-height: 1.8; margin-bottom: 15px;">
@@ -277,7 +330,7 @@
                 </div>
             </div>
 
-            <!-- রেজিস্ট্রেশন ফর্ম কার্ডে আইডি যুক্ত করা হয়েছে -->
+            <!-- রেজিস্ট্রেশন ফর্ম কার্ড -->
             <div class="card" id="regFormCard">
                 <h3><i class="fas fa-pen-nib"></i> রেজিস্ট্রেশন ফর্ম</h3>
                 <p style="text-align: center; color: var(--glow-pink); font-weight: bold; font-size: 18px; margin-bottom: 25px; text-shadow: 0 0 10px rgba(236,72,153,0.3);">
@@ -446,6 +499,12 @@
 
     </div>
 
+    <!-- এক সাইডে সুন্দরভাবে ভাসমান QR Code উইজেট -->
+    <div class="qr-side-widget">
+        <img id="dynamicQRCode" src="" alt="Website QR Code">
+        <span>স্ক্যান করুন</span>
+    </div>
+
     <a href="https://wa.me/+8801738991884" target="_blank" class="whatsapp-float">
         <i class="fab fa-whatsapp"></i>
     </a>
@@ -453,6 +512,16 @@
     <div id="toast">মেসেজ</div>
 
 <script>
+    // অটোমেটিক বর্তমান ওয়েবসাইটের লিংক নিয়ে QR Code জেনারেট করার কোড
+    window.addEventListener('DOMContentLoaded', () => {
+        let currentUrl = window.location.href;
+        let qrImgUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(currentUrl)}`;
+        let qrEl = document.getElementById('dynamicQRCode');
+        if(qrEl) {
+            qrEl.src = qrImgUrl;
+        }
+    });
+
     const firebaseConfig = {
         apiKey: "AIzaSyB_fPJPA_4iz-aVj2W2vpJ5yau2XeOkwT0",
         authDomain: "ngdc-rag-day.firebaseapp.com",
@@ -838,7 +907,7 @@
     }
 
     function approveStudent(id) {
-        if(confirm("পেমেন্টটি সঠিক?")) {
+        if(confirm("পেমেন্টটি সঠিক?", "#10b981")) {
             db.collection("students").doc(id).update({ status: "Done" })
             .then(() => showToast("Approve করা হয়েছে!", "#10b981"))
             .catch((error) => showToast("অনুমতি নেই!", "#ef4444"));
@@ -847,7 +916,7 @@
 
     function deleteStudent(id) {
         if(confirm("আপনি কি নিশ্চিতভাবে এই রেজিস্ট্রেশনটি ডিলিট করতে চান?")) {
-            db.collection("students").doc(id).delete()
+            db.collection("students").doc.delete()
             .then(() => showToast("সফলভাবে ডিলিট করা হয়েছে!", "#ef4444"))
             .catch((error) => showToast("ডিলিট করতে সমস্যা হয়েছে: " + error.message, "#ef4444"));
         }
