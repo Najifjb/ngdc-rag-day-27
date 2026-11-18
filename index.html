@@ -14,8 +14,8 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     
-    <!-- PDF Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- HTML2Canvas Library (সরাসরি ইমেজ ডাউনলোডের জন্য প্রয়োজনীয় লাইব্রেরি) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
         :root {
@@ -205,19 +205,114 @@
         @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 40px; opacity: 1; } }
         @keyframes fadeout { from { bottom: 40px; opacity: 1; } to { bottom: 0; opacity: 0; } }
 
+        /* রিসিট ডিজাইন (যা দেখতে হুবহু ছবির মতো এবং ফোনের স্ক্রিনে দারুণ দেখাবে) */
         #receipt { 
             display: none; 
             width: 100%;
             max-width: 450px;
-            margin: 0 auto;
-            padding: 20px; 
-            background: #ffffff !important; 
-            color: #0f172a !important; 
-            border-radius: 12px; 
-            border: 3px solid #be123c; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
+            margin: 15px auto;
+            padding: 30px 25px; 
+            background: #fffdf5 !important; 
+            color: #1e293b !important; 
+            border-radius: 10px; 
+            border: 6px solid #d4af37; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25); 
             box-sizing: border-box;
             text-align: left;
+            position: relative;
+            background-image: radial-gradient(#e2d9c2 0.75px, transparent 0.75px);
+            background-size: 15px 15px;
+        }
+
+        .receipt-header {
+            text-align: center;
+            border-bottom: 2px solid #d4af37;
+            padding-bottom: 12px;
+            margin-bottom: 15px;
+        }
+
+        .receipt-emblem {
+            width: 80px;
+            height: 80px;
+            background: #ffde59;
+            border: 3px solid #b8860b;
+            border-radius: 50%;
+            margin: 0 auto 8px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        .receipt-emblem img {
+            width: 60px;
+            height: auto;
+        }
+
+        .receipt-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0;
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 0px #fff;
+        }
+
+        .receipt-subtitle {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+            margin: 4px 0 12px 0;
+            background: #fef08a;
+            display: inline-block;
+            padding: 4px 15px;
+            border-radius: 20px;
+            border: 1px solid #ca8a04;
+        }
+
+        .receipt-body {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        .receipt-body p {
+            margin: 6px 0;
+            border-bottom: 1px dashed rgba(212, 175, 55, 0.4);
+            padding-bottom: 4px;
+        }
+
+        .paid-stamp-box {
+            text-align: right;
+            margin-top: 15px;
+        }
+
+        .paid-stamp {
+            display: inline-block;
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            color: white;
+            font-size: 24px;
+            font-weight: 900;
+            padding: 6px 22px;
+            border-radius: 8px;
+            transform: rotate(-8deg);
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+            border: 2px dashed #fff;
+            letter-spacing: 2px;
+        }
+
+        .receipt-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #475569;
+            border-top: 1px solid #d4af37;
+            padding-top: 10px;
+            font-weight: 700;
         }
 
         .map-container {
@@ -266,7 +361,7 @@
         <div id="regSection" class="section active-section">
             <div class="hero-text">
                 <h1>শেষ বেঞ্চ থেকে আজ বিজয়ের মঞ্চে—নিউ গভমেন্ট ডিগ্রি কলেজ, ব্যাচ ২০২৭!</h1>
-                <p>কলেজ জীবনের এই মধুর পথচলার শেষ অধ্যায়ে এসে আমরা জমিয়ে একটা বিদায়ের সুর বাঁধতে যাচ্ছি। স্মৃতিগুলোকে আজ ফ্রেমে বন্দি করার পালা। চলো, সবাই মিলে দিনটাকে অবিস্মরণীয় করে তুলی!</p>
+                <p>কলেজ জীবনের এই মধুর পথচলার শেষ অধ্যায়ে এসে আমরা জমিয়ে একটা বিদায়ের সুর বাঁধতে যাচ্ছি। স্মৃতিগুলোকে আজ ফ্রেমে বন্দি করার পালা। চলো, সবাই মিলে দিনটাকে অবিস্মরণীয় করে তুলি!</p>
                 
                 <div class="countdown">
                     <div class="time-box"><span id="days">00</span><small>দিন</small></div>
@@ -393,29 +488,35 @@
                     <i class="fas fa-search"></i> চেক করুন
                 </button>
 
+                <!-- রিসিট ডিজাইন -->
                 <div id="receipt">
-                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #be123c; padding-bottom: 10px; margin-bottom: 15px; background: #fff1f2; margin: -20px -20px 15px -20px; padding: 15px 20px;">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <img src="https://i.postimg.cc/BZYRMC9p/NGDC-RAG-DAY-27-Emblem.png" alt="Logo" style="width: 38px; height: auto; border-radius: 6px;">
-                            <div>
-                                <h2 style="margin: 0; color: #881337; font-size: 16px; font-weight: 800;">NGDC Rag Day 27</h2>
-                                <p style="margin: 0; font-size: 10px; color: #475569;">অফিশিয়াল রেজিস্ট্রেশন পাস</p>
-                            </div>
+                    <div class="receipt-header">
+                        <div class="receipt-emblem">
+                            <img src="https://i.postimg.cc/BZYRMC9p/NGDC-RAG-DAY-27-Emblem.png" alt="Logo">
                         </div>
-                        <span style="background: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 20px; font-weight: bold; font-size: 11px; border: 1px solid #bbf7d0;">PAID ✓</span>
+                        <h2 class="receipt-title">NGDC "RAG DAY-27"</h2>
+                        <div class="receipt-subtitle">রেজিস্ট্রেশন সম্পন্ন - PAID</div>
                     </div>
 
-                    <div style="display: flex; gap: 15px; align-items: center; margin-top: 10px;">
-                        <img id="r_pic" src="" alt="Student Photo" style="width: 70px; height: 70px; object-fit: cover; border-radius: 50%; border: 3px solid #be123c; flex-shrink: 0;">
-                        <div style="color: #1e293b; font-size: 13px; line-height: 1.5; overflow: hidden;">
-                            <p style="margin: 2px 0; white-space: nowrap;"><b>নাম:</b> <span id="r_name" style="font-weight: 600; color: #881337;"></span></p>
-                            <p style="margin: 2px 0; white-space: nowrap;"><b>রোল:</b> <span id="r_roll"></span> | <b>সেকশন:</b> <span id="r_section"></span></p>
-                            <p style="margin: 2px 0; white-space: nowrap;"><b>টি-শার্ট:</b> <span id="r_tshirt" style="font-weight: 600; color: #0284c7;"></span></p>
-                        </div>
+                    <div class="receipt-body">
+                        <p><b>ইভেন্ট:</b> NGDC Rag Day 27</p>
+                        <p><b>তারিখ:</b> <span id="r_date">২৫ জানুয়ারি, ২০২৭</span></p>
+                        <p><b>রেজিস্ট্রেশন আইডি:</b> <span id="r_regid" style="color: #b91c1c; font-weight: 800;"></span></p>
+                        <p><b>নাম:</b> <span id="r_name"></span></p>
+                        <p><b>রোল:</b> <span id="r_roll"></span></p>
+                        <p><b>বিভাগ:</b> <span id="r_section"></span></p>
+                        <p><b>টি-শার্ট সাইজ:</b> <span id="r_tshirt" style="color: #0284c7;"></span></p>
+                        <p><b>পেমেন্ট পদ্ধতি:</b> বিকাশ</p>
+                        <p><b>ট্রানজাকশন আইডি:</b> <span id="r_trxid" style="color: #059669; font-weight: 800;"></span></p>
                     </div>
 
-                    <div style="margin-top: 15px; border-top: 1px dashed #cbd5e1; padding-top: 8px; text-align: center; font-size: 10px; color: #64748b;">
-                        ইভেন্টের দিন এই পাসটি সাথে রাখুন। #NGDCRag27
+                    <div class="paid-stamp-box">
+                        <span class="paid-stamp">PAID</span>
+                    </div>
+
+                    <div class="receipt-footer">
+                        <span>© NGDC</span>
+                        <span>#NGDCRagDay27</span>
                     </div>
                 </div>
 
@@ -800,8 +901,7 @@
                     ctx.drawImage(img, 0, 0, width, height);
                     let base64Image = canvas.toDataURL("image/jpeg", 0.7);
                     
-                    // ইউনিক রেজিস্ট্রেশন আইডি এবং বর্তমান তারিখ জেনারেট করা হচ্ছে
-                    let regId = 'NGDC-' + Math.floor(100000 + Math.random() * 900000);
+                    let regId = 'REG-2027-' + Math.floor(100000 + Math.random() * 900000);
                     let currentDate = new Date().toLocaleDateString('bn-BD', {
                         year: 'numeric',
                         month: 'long',
@@ -858,7 +958,11 @@
                         document.getElementById('r_roll').innerText = data.roll;
                         document.getElementById('r_section').innerText = data.section; 
                         document.getElementById('r_tshirt').innerText = data.tshirt;
-                        if(data.pic) { document.getElementById('r_pic').src = data.pic; }
+                        document.getElementById('r_regid').innerText = data.regId || 'REG-2027-001001';
+                        document.getElementById('r_trxid').innerText = data.trxid || '';
+                        if(data.regDate) {
+                            document.getElementById('r_date').innerText = data.regDate;
+                        }
                         
                         document.getElementById('receipt').style.display = "block"; 
                         document.getElementById('downloadBtn').style.display = "inline-block";
@@ -874,16 +978,20 @@
         });
     }
 
+    // নিখুঁতভাবে ইমেজ হিসেবে রিসিট ডাউনলোড করার ফাংশন
     function downloadPDF() {
         let element = document.getElementById('receipt');
-        let opt = { 
-            margin: 0.1, 
-            filename: 'NGDC_RagDay_Pass.pdf', 
-            image: { type: 'jpeg', quality: 0.98 }, 
-            html2canvas: { scale: 3, useCORS: true, letterRendering: true }, 
-            jsPDF: { unit: 'in', format: [4.2, 4.8], orientation: 'portrait' } 
-        };
-        html2pdf().set(opt).from(element).save();
+        showToast("ডিজিটাল পাস ডাউনলোড হচ্ছে...", "#38bdf8");
+        
+        html2canvas(element, { scale: 3, useCORS: true }).then(canvas => {
+            let link = document.createElement('a');
+            link.download = 'NGDC_RagDay_Receipt.jpg';
+            link.href = canvas.toDataURL('image/jpeg', 1.0);
+            link.click();
+            showToast("ডাউনলোড সফল হয়েছে!", "#10b981");
+        }).catch(err => {
+            showToast("ডাউনলোড করতে সমস্যা হয়েছে!", "#ef4444");
+        });
     }
 
     function loadAdminData() {
