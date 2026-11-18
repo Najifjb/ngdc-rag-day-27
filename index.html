@@ -207,6 +207,10 @@
                     <div class="time-box"><span id="minutes">00</span><small>মিনিট</small></div>
                     <div class="time-box"><span id="seconds">00</span><small>সেকেন্ড</small></div>
                 </div>
+
+                <div style="margin-top: 20px; background: rgba(56, 189, 248, 0.1); border: 1px solid var(--glow-blue); padding: 12px; border-radius: 12px; display: inline-block;">
+                    <span style="font-size: 18px; color: var(--glow-blue); font-weight: bold;"><i class="fas fa-users"></i> মোট রেজিস্টার্ড শিক্ষার্থী: <span id="totalRegistered">0</span> জন</span>
+                </div>
             </div>
 
             <!-- আমাদের গল্প / এবাউট সেকশন -->
@@ -246,7 +250,8 @@
                 </div>
             </div>
 
-            <div class="card">
+            <!-- রেজিস্ট্রেশন ফর্ম কার্ডে আইডি যুক্ত করা হয়েছে যাতে স্ক্রোল করে সরাসরি এখানে আসা যায় -->
+            <div class="card" id="regFormCard">
                 <h3><i class="fas fa-pen-nib"></i> রেজিস্ট্রেশন ফর্ম</h3>
                 <p style="text-align: center; color: var(--glow-pink); font-weight: bold; font-size: 18px; margin-bottom: 25px; text-shadow: 0 0 10px rgba(236,72,153,0.3);">
                     বিকাশ সেন্ড মানি: 01738991884 (Personal)<br>রেজিস্ট্রেশন ফি: ১০২০ টাকা (১০০০ টাকা তুলতে বিকাশ চার্জ ২০ টাকা সহ)
@@ -284,7 +289,7 @@
             <div class="card">
                 <h3><i class="fas fa-bullhorn"></i> ব্যাচ ২০২৭-এর প্রতিটি সদস্যের প্রতি</h3>
                 <p style="color: var(--text-dim); line-height: 1.8; margin: 0;">
-                    বন্ধুরা, এই দিনটা শুধু আমাদের কয়েকজনের আয়োজনে সফল হবে না; এই দিনটার আসল প্রাণ তোমরাই! গত দুই বছর ধরে যেভাবে একে অপরের পাশে থেকেছি, ঠিক একইভাবে এই দিনটাকেও জীবনের সেরা একটা দিনে রূপান্তর করতে হবে। কোনো ভুলত্রুটি হলে ক্ষমা সুন্দর দৃষ্টিতে দেখবে এবং সবাই মিলে দিনটাকে উপভোগ করবে। কারণ এই মুহূর্তগুলো আর কখনো ফিরে আসবে না। চলো, একসাথে মিলে একটা ইতিহাস গড়ি!
+                    বন্ধুরা, এই দিনটা শুধু কয়েকজনের আয়োজনে সফল হবে না; এই দিনটার আসল প্রাণ তোমরাই! গত দুই বছর ধরে যেভাবে একে অপরের পাশে থেকেছি, ঠিক একইভাবে এই দিনটাকেও জীবনের সেরা একটা দিনে রূপান্তর করতে হবে। কোনো ভুলত্রুটি হলে ক্ষমা সুন্দর দৃষ্টিতে দেখবে এবং সবাই মিলে দিনটাকে উপভোগ করবে। কারণ এই মুহূর্তগুলো আর কখনো ফিরে আসবে না। চলো, একসাথে মিলে একটা ইতিহাস গড়ি!
                 </p>
             </div>
     
@@ -431,6 +436,7 @@
         setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 4000);
     }
 
+    // রেজিস্ট্রেশন বাটনে ক্লিক করলে স্লাইড হয়ে ফর্মের অংশে নিয়ে যাওয়ার ফাংশন
     function showSection(sectionId, btnId) {
         document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active-section'));
         document.querySelectorAll('.nav-menu button').forEach(btn => btn.classList.remove('active-btn'));
@@ -439,6 +445,14 @@
         if(btnId) {
             let b = document.getElementById(btnId);
             if(b) b.classList.add('active-btn');
+        }
+
+        // যদি রেজিস্ট্রেশন সেকশন সিলেক্ট করা হয়, তবে সরাসরি ফর্মের দিকে স্ক্রোল করবে
+        if(sectionId === 'regSection') {
+            let formCard = document.getElementById('regFormCard');
+            if(formCard) {
+                formCard.scrollIntoView({ behavior: 'smooth' });
+            }
         }
     }
 
